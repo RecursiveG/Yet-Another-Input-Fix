@@ -1,33 +1,46 @@
-package org.devinprogress.inputfix;
+package org.devinprogress.YAIF;
 
-import cpw.mods.fml.common.Mod;
+import com.google.common.eventbus.EventBus;
+import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.versioning.ArtifactVersion;
+import cpw.mods.fml.common.versioning.VersionRange;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiScreenBook;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.inventory.GuiEditSign;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
+
+import java.io.File;
 import java.lang.reflect.Field;
-import java.util.HashSet;
-import java.util.Set;
+import java.security.cert.Certificate;
+import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Created by recursiveg on 14-9-10.
  */
 
-@Mod(modid="inputfix", name="InputFix", version="1.0.0")
-public class Main {
+@Mod(modid="YAIF", name="YetAnotherInputFix", version="1.7.2", dependencies="required-after:FML")
+public class YetAnotherInputFix{
+
+    public static boolean ObfuscatedEnv=true;
     private Set<Class<?>> InputableGui = new HashSet<Class<?>>();
     private Set<Class<?>> UnInputableGui = new HashSet<Class<?>>();
     public static GuiScreen currentGuiScreen = null;
     public static GuiTextField currentTextField = null;
     private static InputFieldWrapper wrapper =null;
     public static GuiTextField txt = null;
+    public static final Logger logger=Logger.getLogger("YAIF");
 
-    @Mod.EventHandler
-    public void preLoad(FMLPreInitializationEvent event) {
+    //Will be called before the Constructor! Be careful.
+    public static void SetupTextFieldWrapper(int W, int H){
+        wrapper=new InputFieldWrapper(W,H);
     }
 
     @Mod.EventHandler
@@ -35,45 +48,46 @@ public class Main {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    @Mod.EventHandler
-    public void postLoad(FMLPostInitializationEvent event) {
-    }
-
     @SubscribeEvent
     public void onGuiChange(GuiOpenEvent e) {
 
-        boolean inputable;
+        boolean hasTextField;
         if (e.gui != null) {
             Class GuiClass = e.gui.getClass();
+
             if (UnInputableGui.contains(GuiClass)) {
-                inputable = false;
+                hasTextField = false;
             } else if (InputableGui.contains(GuiClass)) {
-                inputable = true;
+                hasTextField = true;
             } else { //Use Reflection to Check all fields
-                inputable = false;
+                hasTextField = false;
                 for (Field f : GuiClass.getDeclaredFields()) {
                     if (f.getType() == GuiTextField.class) {
-                        inputable = true;
+                        hasTextField = true;
                         break;
                     }
                 }
-                if (inputable)
+                /*TODO: Uncomment when bridges done
+                //TODO: Find a better way to do this
+                if( GuiClass.equals(GuiEditSign.class)    ||
+                    GuiClass.equals(GuiScreenBook.class))
+                    hasTextField=true;*/
+
+                if (hasTextField)
                     InputableGui.add(GuiClass);
                 else
                     UnInputableGui.add(GuiClass);
             }
         } else {
-            inputable = false;
+            hasTextField = false;
         }
 
-        if (inputable) {
+        if (hasTextField) {
             currentGuiScreen = e.gui;
-            //wrapper.show();
-            //This Gui has GuiTextField
+            currentTextField=null;
         } else {
             currentGuiScreen = null;
             wrapper.hide();
-            //No GuiTextField TuT
         }
         currentTextField = null;
     }
@@ -93,9 +107,5 @@ public class Main {
                 wrapper.hide();
             }
         }
-    }
-
-    public static void SetupTextFieldWrapper(int W, int H){
-        wrapper=new InputFieldWrapper(W,H);
     }
 }

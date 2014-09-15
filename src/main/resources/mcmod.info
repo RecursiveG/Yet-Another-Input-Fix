@@ -1,0 +1,10 @@
+[
+{
+  "modid": "YAIF",
+  "name": "Yet Another InputFix",
+  "description": "InputFix MOD using ASMTransformer.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "authorList": ["RecursiveG"]
+}
+]

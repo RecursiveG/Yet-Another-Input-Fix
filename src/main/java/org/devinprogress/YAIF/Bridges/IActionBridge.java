@@ -1,4 +1,4 @@
-package org.devinprogress.inputfix;
+package org.devinprogress.YAIF.Bridges;
 
 import javax.swing.*;
 
@@ -13,8 +13,12 @@ public interface IActionBridge {
         Quit,
         SetText
     }
+
+    //TODO: Maybe it's a better idea to make wrapper.txtField public?
     public ActionFeedback onEnter(final JTextField txt);
     public ActionFeedback onEsc(final JTextField txt);
-    public ActionFeedback onChanged(final JTextField txt);
+    public ActionFeedback onChange(final JTextField txt);
     public ActionFeedback onTab(final JTextField txt);
+    public ActionFeedback onUp(final JTextField txt);
+    public ActionFeedback onDown(final JTextField txt);
 }

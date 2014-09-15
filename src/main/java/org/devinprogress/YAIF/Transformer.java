@@ -1,4 +1,4 @@
-package org.devinprogress.inputfix;
+package org.devinprogress.YAIF;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassReader;
@@ -22,7 +22,7 @@ public class Transformer implements IClassTransformer {
     /* This Transformer is designed for Minecraft version 1.7.2 */
     private byte[] tryTransformMinecraft(byte[] orig,boolean obf,String obfedClassName){
         //Add TextField Wrapper
-        //org.devinprogress.inputfix.Main.SetupTextFieldWrapper(this.displayWidth, this.displayHeight);
+        //org.devinprogress.YAIF.YetAnotherInputFix.SetupTextFieldWrapper(this.displayWidth, this.displayHeight);
         //before ForgeHooksClient.createDisplay();
         //At method startGame() ()V
 
@@ -30,7 +30,7 @@ public class Transformer implements IClassTransformer {
         //GETFIELD net/minecraft/client/Minecraft.displayWidth : I
         //ALOAD 0
         //GETFIELD net/minecraft/client/Minecraft.displayHeight : I
-        //INVOKESTATIC org/devinprogress/inputfix/Main.SetupTextFieldWrapper (II)V
+        //INVOKESTATIC org/devinprogress/YAIF/YetAnotherInputFix.SetupTextFieldWrapper (II)V
 
         //Be careful of the Exception Labels!!!
         //Insert before INVOKESTATIC net/minecraftforge/client/ForgeHooksClient.createDisplay ()V
@@ -66,13 +66,14 @@ public class Transformer implements IClassTransformer {
                 mn.instructions.insertBefore(n,new VarInsnNode(Opcodes.ALOAD,0));
                 mn.instructions.insertBefore(n,new FieldInsnNode(Opcodes.GETFIELD,obfedClassName.replace('.','/'),HeightName,"I"));
                 mn.instructions.insertBefore(n,new MethodInsnNode(Opcodes.INVOKESTATIC,
-                        "org/devinprogress/inputfix/Main","SetupTextFieldWrapper","(II)V"));
+                        "org/devinprogress/YAIF/YetAnotherInputFix","SetupTextFieldWrapper","(II)V"));
                 // Codes are braced by existed TryCatchBlock
+                mn.maxStack+=1;
                 break;
             }
         }
 
-        ClassWriter cw=new ClassWriter(ClassWriter.COMPUTE_FRAMES|ClassWriter.COMPUTE_MAXS);
+        ClassWriter cw=new ClassWriter(0);//AutoCompute will crash
         cn.accept(cw);
         return cw.toByteArray();
 
@@ -80,12 +81,12 @@ public class Transformer implements IClassTransformer {
     }
     private byte[] tryTransformGuiTextField(byte[] orig,boolean obf,String obfedClassName){
         //Hook to GuiTextField onFocusChange
-        //org.devinprogress.inputfix.Main.TextFieldFocusChange(this, p_146195_1_);
+        //org.devinprogress.YAIF.YetAnotherInputFix.TextFieldFocusChange(this, p_146195_1_);
         //At the beginning/ending of setFocused (Z)V
 
         //ALOAD 0
         //ILOAD 1
-        //INVOKESTATIC org/devinprogress/inputfix/Main.TextFieldFocusChange
+        //INVOKESTATIC org/devinprogress/YAIF/YetAnotherInputFix.TextFieldFocusChange
         //   (Lnet/minecraft/client/gui/GuiTextField;Z)V  for for version 1.7.2
 
         //Remember to use the obfuscated name for Lnet/minecraft/client/gui/GuiTextField;
@@ -103,7 +104,7 @@ public class Transformer implements IClassTransformer {
                 mn.instructions.insertBefore(n,new VarInsnNode(Opcodes.ALOAD,0));
                 mn.instructions.insertBefore(n,new VarInsnNode(Opcodes.ILOAD,1));
                 mn.instructions.insertBefore(n,new MethodInsnNode(Opcodes.INVOKESTATIC,
-                        "org/devinprogress/inputfix/Main","TextFieldFocusChange",
+                        "org/devinprogress/YAIF/YetAnotherInputFix","TextFieldFocusChange",
                         "(L"+obfedClassName.replace('.','/')+";Z)V"));
                 break;
             }

@@ -1,7 +1,8 @@
-package org.devinprogress.inputfix;
+package org.devinprogress.YAIF.Bridges;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import org.devinprogress.YAIF.InputFieldWrapper;
 
 import javax.swing.*;
 
@@ -26,7 +27,7 @@ public class DebugBridge implements IActionBridge {
     }
 
     @Override
-    public ActionFeedback onChanged(JTextField txt) {
+    public ActionFeedback onChange(JTextField txt) {
         System.out.println("[Debug Bridge][onChange]"+txt.getText());
         return ActionFeedback.Nothing;
     }
@@ -35,5 +36,15 @@ public class DebugBridge implements IActionBridge {
     public ActionFeedback onTab(JTextField txt) {
         System.out.println("[Debug Bridge][onTab]"+txt.getText());
         return ActionFeedback.Nothing;
+    }
+
+    @Override
+    public ActionFeedback onUp(JTextField txt) {
+        return null;
+    }
+
+    @Override
+    public ActionFeedback onDown(JTextField txt) {
+        return null;
     }
 }

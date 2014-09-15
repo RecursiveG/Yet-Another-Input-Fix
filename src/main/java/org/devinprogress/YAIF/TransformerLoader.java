@@ -1,4 +1,4 @@
-package org.devinprogress.inputfix;
+package org.devinprogress.YAIF;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
@@ -12,7 +12,7 @@ public class TransformerLoader implements IFMLLoadingPlugin {
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[] {"org.devinprogress.inputfix.Transformer"};
+        return new String[] {"org.devinprogress.YAIF.Transformer"};
     }
 
     @Override
@@ -27,7 +27,7 @@ public class TransformerLoader implements IFMLLoadingPlugin {
 
     @Override
     public void injectData(Map<String, Object> data) {
-
+        YetAnotherInputFix.ObfuscatedEnv=(Boolean)data.get("runtimeDeobfuscationEnabled");
     }
 
     @Override
