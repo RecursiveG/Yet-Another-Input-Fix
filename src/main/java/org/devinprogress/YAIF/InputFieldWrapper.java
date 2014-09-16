@@ -13,6 +13,8 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Collections;
 
 /**
@@ -42,7 +44,13 @@ public class InputFieldWrapper {
         frame =new JFrame("Minecraft");
         txtField =new JTextField();
 
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                FMLClientHandler.instance().getClient().shutdown();
+            }
+        });
         frame.setLayout(new BorderLayout());
         frame.setVisible(true);
         frame.add(canvas,BorderLayout.CENTER);
