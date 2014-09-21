@@ -2,9 +2,11 @@ package org.devinprogress.YAIF.Bridges;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.gui.GuiChat;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import org.devinprogress.YAIF.InputFieldWrapper;
 import org.devinprogress.YAIF.YetAnotherInputFix;
+import org.lwjgl.input.Keyboard;
 
 import javax.swing.*;
 import java.lang.reflect.Field;
@@ -93,5 +95,10 @@ public class GuiChatBridge implements IActionBridge {
         }
         wrapper.setTextNoEvent(this.txt.getText());
         return null;
+    }
+
+    @Override
+    public boolean sameAs(GuiScreen screen, GuiTextField txtField) {
+        return this.screen==screen && txtField==txt;
     }
 }

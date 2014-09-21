@@ -1,6 +1,7 @@
 package org.devinprogress.YAIF;
 
 import com.google.common.eventbus.EventBus;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -30,8 +31,8 @@ import java.util.logging.Logger;
 public class YetAnotherInputFix{
 
     public static boolean ObfuscatedEnv=true;
-    private Set<Class<?>> InputableGui = new HashSet<Class<?>>();
-    private Set<Class<?>> UnInputableGui = new HashSet<Class<?>>();
+    private static Set<Class<?>> InputableGui = new HashSet<Class<?>>();
+    private static Set<Class<?>> UnInputableGui = new HashSet<Class<?>>();
     public static GuiScreen currentGuiScreen = null;
     public static GuiTextField currentTextField = null;
     private static InputFieldWrapper wrapper =null;
@@ -49,57 +50,31 @@ public class YetAnotherInputFix{
     }
 
     @SubscribeEvent
-    public void onGuiChange(GuiOpenEvent e) {
-
-        boolean hasTextField;
-        if (e.gui != null) {
-            Class GuiClass = e.gui.getClass();
-
-            if (UnInputableGui.contains(GuiClass)) {
-                hasTextField = false;
-            } else if (InputableGui.contains(GuiClass)) {
-                hasTextField = true;
-            } else { //Use Reflection to Check all fields
-                hasTextField = false;
-                for (Field f : GuiClass.getDeclaredFields()) {
-                    if (f.getType() == GuiTextField.class) {
-                        hasTextField = true;
-                        break;
-                    }
-                }
-                /*TODO: Uncomment when bridges done
-                //TODO: Find a better way to do this
-                if( GuiClass.equals(GuiEditSign.class)    ||
-                    GuiClass.equals(GuiScreenBook.class))
-                    hasTextField=true;*/
-
-                if (hasTextField)
-                    InputableGui.add(GuiClass);
-                else
-                    UnInputableGui.add(GuiClass);
-            }
-        } else {
-            hasTextField = false;
+    public void onGuiChange(GuiScreenEvent.InitGuiEvent.Post e) {
+        if(e.gui==null){
+            logger.info("EventGui == null");
         }
-
-        if (hasTextField) {
-            currentGuiScreen = e.gui;
+        if(e.gui instanceof GuiEditSign){
+            currentGuiScreen=e.gui;
             currentTextField=null;
-        } else {
-            currentGuiScreen = null;
-            wrapper.hide();
+            wrapper.show();
         }
-        currentTextField = null;
     }
 
     public static void TextFieldFocusChange(GuiTextField textField, boolean isFocused) {
         if (isFocused) {
-            if (currentGuiScreen != null) {
+            /*if (currentGuiScreen != null) {
                 currentTextField = textField;
                 wrapper.show();
             }else {
                 currentTextField = null;
                 wrapper.hide();
+            }*/
+            GuiScreen sc= FMLClientHandler.instance().getClient().currentScreen;
+            if(GuiCanInput(sc)){
+                currentGuiScreen=sc;
+                currentTextField=textField;
+                wrapper.show();
             }
         } else {
             if (currentTextField == textField) {
@@ -107,5 +82,27 @@ public class YetAnotherInputFix{
                 wrapper.hide();
             }
         }
+    }
+
+    private static boolean GuiCanInput(GuiScreen gui){
+        if(gui==null)return false;
+        Class GuiClass=gui.getClass();
+        if(UnInputableGui.contains(GuiClass))return false;
+        if(InputableGui.contains(GuiClass))return true;
+        boolean hasTextField = false;
+
+        for (Field f : GuiClass.getDeclaredFields()) {
+            if (f.getType() == GuiTextField.class) {
+                hasTextField = true;
+                break;
+            }
+        }
+
+        if (hasTextField)
+            InputableGui.add(GuiClass);
+        else
+            UnInputableGui.add(GuiClass);
+
+        return hasTextField;
     }
 }

@@ -47,4 +47,8 @@ public class DebugBridge implements IActionBridge {
     public ActionFeedback onDown(JTextField txt) {
         return null;
     }
+    @Override
+    public boolean sameAs(GuiScreen screen, GuiTextField txtField) {
+        return false;
+    }
 }

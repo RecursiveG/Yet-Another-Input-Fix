@@ -1,10 +1,13 @@
 package org.devinprogress.YAIF;
 
+import com.sun.istack.internal.Nullable;
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.gui.GuiChat;
-import org.apache.logging.log4j.Level;
+import net.minecraft.client.gui.inventory.GuiEditSign;
+import org.devinprogress.YAIF.Bridges.EditSignBridge;
 import org.devinprogress.YAIF.Bridges.GuiChatBridge;
 import org.devinprogress.YAIF.Bridges.IActionBridge;
+import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
 
 import javax.swing.*;
@@ -25,12 +28,12 @@ public class InputFieldWrapper {
 
     private static boolean hasInitiated=false;
     private boolean enabled=true;      //Reserved for Further Use
-    private boolean Showed=false;
+    private boolean shown =false;
     private boolean doTriggerOnChangeEvent=true;
     private IActionBridge bridge=null;
 
-    private Canvas canvas = null;
-    private JFrame frame = null;
+    private AWTGLCanvas canvas = null;
+    private final JFrame frame=new JFrame("Minecraft");
     private JTextField txtField = null;
 
     public InputFieldWrapper(int Width,int Height){ //Should be Called only once
@@ -40,8 +43,12 @@ public class InputFieldWrapper {
         }
         hasInitiated=true;
 
-        canvas =new Canvas();
-        frame =new JFrame("Minecraft");
+        try {
+            canvas = new AWTGLCanvas();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        canvas.setFocusable(true);
         txtField =new JTextField();
 
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -71,7 +78,7 @@ public class InputFieldWrapper {
         frame.validate();
     }
 
-    private void bindKeys(){//TODO: add arrow up/down event for GuiChat
+    private void bindKeys(){
     //Should be Called Only Once
     //Be careful about txtField.setText(). It will trigger here and further trigger the bridges.
         InputMap inputmap = txtField.getInputMap();
@@ -150,26 +157,28 @@ public class InputFieldWrapper {
     }
 
     public void show(){//called when GuiTextField: New/Re-click/change
-        buildBridge();
-        if(Showed)return;
-        Showed=true;
-        frame.setSize(new Dimension(frame.getWidth(), frame.getHeight() + TextFieldHeight));
-        txtField.setVisible(true);
-        FMLClientHandler.instance().getClient().setIngameNotInFocus();
-        txtField.requestFocus();
-        frame.validate();
+        if(!enabled)return;
+        bridge=getBridge();
+        if((!shown)&&bridge!=null) {
+            shown = true;
+            frame.setSize(new Dimension(frame.getWidth(), frame.getHeight() + TextFieldHeight));
+            txtField.setVisible(true);
+            FMLClientHandler.instance().getClient().setIngameNotInFocus();
+            txtField.requestFocus();
+            frame.validate();
+        }
     }
 
     //TODO: Fix Bugs about focus
     public void hide(){
         bridge=null;
-        if(!Showed)return;
-        Showed=false;
+        if(!shown)return;
+        shown =false;
         txtField.setVisible(false);
         frame.setSize(new Dimension(frame.getWidth(), frame.getHeight() - TextFieldHeight));
-        frame.validate();
-        txtField.transferFocus();
+
         canvas.requestFocusInWindow();
+        frame.validate();
         FMLClientHandler.instance().getClient().setIngameFocus();
     }
 
@@ -186,10 +195,16 @@ public class InputFieldWrapper {
         }
     }
 
-    private void buildBridge(){//Remember to add cases here if new Bridges added.
+    @Nullable
+    private IActionBridge getBridge(){//Remember to add cases here if new Bridges added.
+        if(bridge!=null&&bridge.sameAs(YetAnotherInputFix.currentGuiScreen,YetAnotherInputFix.currentTextField))
+            return bridge;
         if(YetAnotherInputFix.currentGuiScreen instanceof GuiChat)
-            bridge=new GuiChatBridge(YetAnotherInputFix.currentTextField, (GuiChat)YetAnotherInputFix.currentGuiScreen,this);
-        else hide();
+            return new GuiChatBridge(YetAnotherInputFix.currentTextField, (GuiChat)YetAnotherInputFix.currentGuiScreen,this);
+        else if(YetAnotherInputFix.currentGuiScreen instanceof GuiEditSign)
+            return new EditSignBridge((GuiEditSign)YetAnotherInputFix.currentGuiScreen,this);
+        else
+            return null;
         //else bridge=new CommonBridge(YetAnotherInputFix.currentTextField, this);
     }
 

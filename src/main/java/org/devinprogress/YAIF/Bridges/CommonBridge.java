@@ -48,4 +48,8 @@ public class CommonBridge implements IActionBridge{
     public ActionFeedback onDown(JTextField txt) {
         return null;
     }
+    @Override
+    public boolean sameAs(GuiScreen screen, GuiTextField txtField) {
+        return txtField==txt;
+    }
 }
