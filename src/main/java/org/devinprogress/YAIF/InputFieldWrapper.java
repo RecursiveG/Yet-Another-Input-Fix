@@ -179,7 +179,7 @@ public class InputFieldWrapper {
 
         canvas.requestFocusInWindow();
         frame.validate();
-        FMLClientHandler.instance().getClient().setIngameFocus();
+        YetAnotherInputFix.needFocus=true;
     }
 
     public void DoActions(IActionBridge.ActionFeedback action, Object obj){

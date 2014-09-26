@@ -44,11 +44,11 @@ public class GuiChatBridge implements IActionBridge {
     @Override
     public ActionFeedback onEnter(JTextField txt) { //send
         this.txt.setText(txt.getText());
-        /*try {
+        try {
             keyTypedMethod.invoke(screen, '\n', 28);//Magic Numbers can be found at http://minecraft.gamepedia.com/Key_Codes
         }catch(Exception e){
             e.printStackTrace();
-        }*/
+        }
         return ActionFeedback.Quit;
     }
 

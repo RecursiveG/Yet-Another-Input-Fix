@@ -7,6 +7,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.versioning.ArtifactVersion;
 import cpw.mods.fml.common.versioning.VersionRange;
 import net.minecraft.client.gui.GuiScreen;
@@ -16,6 +17,7 @@ import net.minecraft.client.gui.inventory.GuiEditSign;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
+import org.lwjgl.opengl.Display;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -38,6 +40,7 @@ public class YetAnotherInputFix{
     private static InputFieldWrapper wrapper =null;
     public static GuiTextField txt = null;
     public static final Logger logger=Logger.getLogger("YAIF");
+    public static boolean needFocus=false;
 
     //Will be called before the Constructor! Be careful.
     public static void SetupTextFieldWrapper(int W, int H){
@@ -47,6 +50,7 @@ public class YetAnotherInputFix{
     @Mod.EventHandler
     public void load(FMLInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
+        FMLCommonHandler.instance().bus().register(this);
     }
 
     @SubscribeEvent
@@ -58,6 +62,23 @@ public class YetAnotherInputFix{
             currentGuiScreen=e.gui;
             currentTextField=null;
             wrapper.show();
+        }
+    }
+
+    //Multi-threading is a problem
+    //TODO: UGLY PATCH!!!
+    @SubscribeEvent
+    public void tryGetFocus(TickEvent.ClientTickEvent event){
+        if(needFocus){
+            try{
+                Display.makeCurrent();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            if(Display.isActive()){
+                FMLClientHandler.instance().getClient().setIngameFocus();
+                needFocus=false;
+            }
         }
     }
 
