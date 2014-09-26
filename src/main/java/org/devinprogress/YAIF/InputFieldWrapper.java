@@ -199,8 +199,13 @@ public class InputFieldWrapper {
     private IActionBridge getBridge(){//Remember to add cases here if new Bridges added.
         if(bridge!=null&&bridge.sameAs(YetAnotherInputFix.currentGuiScreen,YetAnotherInputFix.currentTextField))
             return bridge;
-        if(YetAnotherInputFix.currentGuiScreen instanceof GuiChat)
-            return new GuiChatBridge(YetAnotherInputFix.currentTextField, (GuiChat)YetAnotherInputFix.currentGuiScreen,this);
+        if(YetAnotherInputFix.currentGuiScreen instanceof GuiChat) {
+            GuiChatBridge b = new GuiChatBridge(YetAnotherInputFix.currentTextField, (GuiChat) YetAnotherInputFix.currentGuiScreen, this);
+            if(b.isCommand())
+                return null;
+            else
+                return b;
+        }
         else if(YetAnotherInputFix.currentGuiScreen instanceof GuiEditSign)
             return new EditSignBridge((GuiEditSign)YetAnotherInputFix.currentGuiScreen,this);
         else

@@ -21,6 +21,7 @@ public class GuiChatBridge implements IActionBridge {
     private GuiTextField txt=null;
     private InputFieldWrapper wrapper=null;
 
+    private boolean isCmd=false;
     private static Method keyTypedMethod=null;
 
     public GuiChatBridge(GuiTextField textField,GuiChat screen,InputFieldWrapper wrapper){
@@ -36,6 +37,22 @@ public class GuiChatBridge implements IActionBridge {
                     //The Method Desc "(CI)V" seem to be unique
                     keyTypedMethod=m;
                     keyTypedMethod.setAccessible(true);
+                }
+            }
+        }
+
+        for(Field f:screen.getClass().getDeclaredFields()){
+            if(f.getType().equals(String.class)){
+                String def="";
+                try {
+                    f.setAccessible(true);
+                    def=(String)(f.get(screen));
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                if(def.equals("/")){
+                    isCmd=true;
+                    break;
                 }
             }
         }
@@ -100,5 +117,9 @@ public class GuiChatBridge implements IActionBridge {
     @Override
     public boolean sameAs(GuiScreen screen, GuiTextField txtField) {
         return this.screen==screen && txtField==txt;
+    }
+
+    public boolean isCommand(){
+        return isCmd;
     }
 }
