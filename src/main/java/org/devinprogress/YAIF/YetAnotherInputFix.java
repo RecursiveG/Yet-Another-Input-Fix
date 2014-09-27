@@ -1,27 +1,18 @@
 package org.devinprogress.YAIF;
 
-import com.google.common.eventbus.EventBus;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.versioning.ArtifactVersion;
-import cpw.mods.fml.common.versioning.VersionRange;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiScreenBook;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiEditSign;
-import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.opengl.Display;
 
-import java.io.File;
 import java.lang.reflect.Field;
-import java.security.cert.Certificate;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -55,9 +46,6 @@ public class YetAnotherInputFix{
 
     @SubscribeEvent
     public void onGuiChange(GuiScreenEvent.InitGuiEvent.Post e) {
-        if(e.gui==null){
-            logger.info("EventGui == null");
-        }
         if(e.gui instanceof GuiEditSign){
             currentGuiScreen=e.gui;
             currentTextField=null;
@@ -82,15 +70,9 @@ public class YetAnotherInputFix{
         }
     }
 
+    //Called from GuiTextField.setFocused() due to ASMTransformed
     public static void TextFieldFocusChange(GuiTextField textField, boolean isFocused) {
         if (isFocused) {
-            /*if (currentGuiScreen != null) {
-                currentTextField = textField;
-                wrapper.show();
-            }else {
-                currentTextField = null;
-                wrapper.hide();
-            }*/
             GuiScreen sc= FMLClientHandler.instance().getClient().currentScreen;
             if(GuiCanInput(sc)){
                 currentGuiScreen=sc;

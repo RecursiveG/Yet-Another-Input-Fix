@@ -37,7 +37,7 @@ public class EditSignBridge implements IActionBridge {
             }
 
         try {
-            currentLineField = gui.getClass().getDeclaredField(YetAnotherInputFix.ObfuscatedEnv ? "h" : "editLine");
+            currentLineField = gui.getClass().getDeclaredField(YetAnotherInputFix.ObfuscatedEnv ? "field_146851_h" : "editLine");
             currentLineField.setAccessible(true);
         }catch(Exception e){
             e.printStackTrace();
@@ -57,6 +57,7 @@ public class EditSignBridge implements IActionBridge {
 
     @Override
     public ActionFeedback onEsc(JTextField txt) {
+        //SetInGameFocus will close the GuiEditSign.
         return ActionFeedback.Quit;
     }
 

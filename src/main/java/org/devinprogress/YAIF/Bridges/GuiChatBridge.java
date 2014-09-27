@@ -1,17 +1,14 @@
 package org.devinprogress.YAIF.Bridges;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import org.devinprogress.YAIF.InputFieldWrapper;
 import org.devinprogress.YAIF.YetAnotherInputFix;
-import org.lwjgl.input.Keyboard;
 
 import javax.swing.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.logging.Logger;
 
 /**
  * Created by recursiveg on 14-9-13.
@@ -71,11 +68,7 @@ public class GuiChatBridge implements IActionBridge {
 
     @Override
     public ActionFeedback onEsc(JTextField txt) {
-        /*try {
-            keyTypedMethod.invoke(screen, ' ', 1);
-        }catch(Exception e){
-            e.printStackTrace();
-        }*/
+        //SetInGameFocus will close the GuiChat.
         return ActionFeedback.Quit;
     }
 

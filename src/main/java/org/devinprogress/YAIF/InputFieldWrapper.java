@@ -1,6 +1,5 @@
 package org.devinprogress.YAIF;
 
-import com.sun.istack.internal.Nullable;
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.inventory.GuiEditSign;
@@ -169,7 +168,6 @@ public class InputFieldWrapper {
         }
     }
 
-    //TODO: Fix Bugs about focus
     public void hide(){
         bridge=null;
         if(!shown)return;
@@ -195,7 +193,6 @@ public class InputFieldWrapper {
         }
     }
 
-    @Nullable
     private IActionBridge getBridge(){//Remember to add cases here if new Bridges added.
         if(bridge!=null&&bridge.sameAs(YetAnotherInputFix.currentGuiScreen,YetAnotherInputFix.currentTextField))
             return bridge;
