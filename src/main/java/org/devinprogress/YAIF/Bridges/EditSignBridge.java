@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiEditSign;
 import net.minecraft.tileentity.TileEntitySign;
 import org.devinprogress.YAIF.InputFieldWrapper;
+import org.devinprogress.YAIF.YetAnotherInputFix;
 
 import javax.swing.*;
 import java.lang.reflect.Field;
@@ -17,6 +18,7 @@ public class EditSignBridge implements IActionBridge {
     private InputFieldWrapper wrapper;
     private int currentLine=0;
     private TileEntitySign sign;
+    private Field currentLineField=null;
     public EditSignBridge(GuiEditSign gui,InputFieldWrapper w){
         this.gui=gui;
         this.wrapper=w;
@@ -33,10 +35,22 @@ public class EditSignBridge implements IActionBridge {
                     e.printStackTrace();
                 }
             }
+
+        try {
+            currentLineField = gui.getClass().getDeclaredField(YetAnotherInputFix.ObfuscatedEnv ? "h" : "editLine");
+            currentLineField.setAccessible(true);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
     @Override
     public ActionFeedback onEnter(JTextField txt) {
         currentLine=currentLine+1&3;
+        try{
+            currentLineField.set(gui,currentLine);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         wrapper.setTextNoEvent(sign.signText[currentLine]);
         return null;
     }
@@ -60,6 +74,11 @@ public class EditSignBridge implements IActionBridge {
     @Override
     public ActionFeedback onUp(JTextField txt) {
         currentLine=currentLine-1&3;
+        try{
+            currentLineField.set(gui,currentLine);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         wrapper.setTextNoEvent(sign.signText[currentLine]);
         return null;
     }
@@ -67,6 +86,11 @@ public class EditSignBridge implements IActionBridge {
     @Override
     public ActionFeedback onDown(JTextField txt) {
         currentLine=currentLine+1&3;
+        try{
+            currentLineField.set(gui,currentLine);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         wrapper.setTextNoEvent(sign.signText[currentLine]);
         return null;
     }
