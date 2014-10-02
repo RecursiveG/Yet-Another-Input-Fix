@@ -1,15 +1,21 @@
 package org.devinprogress.YAIF;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.InputEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiEditSign;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 
 import java.lang.reflect.Field;
@@ -32,6 +38,7 @@ public class YetAnotherInputFix{
     public static GuiTextField txt = null;
     public static final Logger logger=Logger.getLogger("YAIF");
     public static boolean needFocus=false;
+    private KeyBinding debugKey=new KeyBinding("Debug Key",Keyboard.KEY_Y,"YAIF");
 
     //Will be called before the Constructor! Be careful.
     public static void SetupTextFieldWrapper(int W, int H){
@@ -40,8 +47,16 @@ public class YetAnotherInputFix{
 
     @Mod.EventHandler
     public void load(FMLInitializationEvent event) {
+        ClientRegistry.registerKeyBinding(debugKey);
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
+    }
+
+    @SubscribeEvent
+    public void onKeyPressed(InputEvent.KeyInputEvent e){
+        if(debugKey.isPressed()){
+            wrapper.hide();
+        }
     }
 
     @SubscribeEvent
@@ -55,6 +70,7 @@ public class YetAnotherInputFix{
 
     //Multi-threading is a problem
     //TODO: UGLY PATCH!!!
+    //TODO: use ASM to reduce potential lag
     @SubscribeEvent
     public void tryGetFocus(TickEvent.ClientTickEvent event){
         if(needFocus){
@@ -65,9 +81,16 @@ public class YetAnotherInputFix{
             }
             if(Display.isActive()){
                 FMLClientHandler.instance().getClient().setIngameFocus();
+
                 needFocus=false;
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onGuiClosing(GuiOpenEvent e){
+        if(e.gui==null&&FMLClientHandler.instance().getClient().currentScreen==currentGuiScreen)
+            wrapper.hide();
     }
 
     //Called from GuiTextField.setFocused() due to ASMTransformed
@@ -85,6 +108,11 @@ public class YetAnotherInputFix{
                 wrapper.hide();
             }
         }
+    }
+
+    @SubscribeEvent
+    public void keyEvents(InputEvent.KeyInputEvent e){
+        System.out.println(String.format("Typedkey=%d",Keyboard.getEventKey()));
     }
 
     private static boolean GuiCanInput(GuiScreen gui){

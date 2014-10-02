@@ -1,10 +1,12 @@
 package org.devinprogress.YAIF.Bridges;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import org.devinprogress.YAIF.InputFieldWrapper;
 import org.devinprogress.YAIF.YetAnotherInputFix;
+import org.lwjgl.input.Keyboard;
 
 import javax.swing.*;
 import java.lang.reflect.Field;
@@ -63,23 +65,41 @@ public class GuiChatBridge implements IActionBridge {
         }catch(Exception e){
             e.printStackTrace();
         }
+        Keyboard.enableRepeatEvents(false);
+        FMLClientHandler.instance().getClient().ingameGUI.getChatGUI().resetScroll();
+
         return ActionFeedback.Quit;
     }
 
     @Override
     public ActionFeedback onEsc(JTextField txt) {
         //SetInGameFocus will close the GuiChat.
+        Keyboard.enableRepeatEvents(false);
+        FMLClientHandler.instance().getClient().ingameGUI.getChatGUI().resetScroll();
         return ActionFeedback.Quit;
     }
 
     @Override
-    public ActionFeedback onChange(JTextField txt) {
-        this.txt.setText(txt.getText());
+    public ActionFeedback onChange(final JTextField txt) {
+        final String str;
+        if(txt.getText().length()>100){
+            str=txt.getText().substring(0,100);
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    txt.setText(str);
+                }
+            });
+        }else{
+            str=txt.getText();
+        }
+        this.txt.setText(str);
         return IActionBridge.ActionFeedback.Nothing;
     }
 
     @Override
     public ActionFeedback onTab(JTextField txt) {
+        //You have to listen to S3APacketTabComplete to get the compliance result.
         YetAnotherInputFix.logger.info("Tab Completion not finished yet.");
         //TODO: Finish it.
         return null;//return null == return Nothing

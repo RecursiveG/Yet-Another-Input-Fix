@@ -125,17 +125,20 @@ public class InputFieldWrapper {
         txtField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                if(bridge!=null)if(doTriggerOnChangeEvent)DoActions(bridge.onChange(txtField),null);else doTriggerOnChangeEvent=true;
+                if(bridge!=null&&doTriggerOnChangeEvent)
+                    DoActions(bridge.onChange(txtField), null);
+                doTriggerOnChangeEvent = true;
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                if(bridge!=null)if(doTriggerOnChangeEvent)DoActions(bridge.onChange(txtField),null);else doTriggerOnChangeEvent=true;
+                if(bridge!=null&&doTriggerOnChangeEvent)
+                    DoActions(bridge.onChange(txtField), null);
+                doTriggerOnChangeEvent = true;
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-
             }
         });
 
@@ -210,9 +213,14 @@ public class InputFieldWrapper {
         //else bridge=new CommonBridge(YetAnotherInputFix.currentTextField, this);
     }
 
-    public void setTextNoEvent(String str){
-        doTriggerOnChangeEvent=false;
-        txtField.setText(str);
-        txtField.setCaretPosition(txtField.getText().length());
+    public void setTextNoEvent(final String str){
+        //doTriggerOnChangeEvent=false;
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                txtField.setText(str);
+                txtField.setCaretPosition(txtField.getText().length());
+            }
+        });
     }
 }

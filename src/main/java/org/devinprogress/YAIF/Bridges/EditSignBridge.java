@@ -36,6 +36,7 @@ public class EditSignBridge implements IActionBridge {
                 }
             }
 
+        //TODO: modification needed of updated
         try {
             currentLineField = gui.getClass().getDeclaredField(YetAnotherInputFix.ObfuscatedEnv ? "field_146851_h" : "editLine");
             currentLineField.setAccessible(true);
@@ -63,7 +64,10 @@ public class EditSignBridge implements IActionBridge {
 
     @Override
     public ActionFeedback onChange(JTextField txt) {
-        sign.signText[currentLine]=txt.getText();
+        if(txt.getText().length()<=15)
+            sign.signText[currentLine]=txt.getText();
+        else
+            sign.signText[currentLine]=txt.getText().substring(0,15);
         return null;
     }
 
