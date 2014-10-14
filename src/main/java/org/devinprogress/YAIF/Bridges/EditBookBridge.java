@@ -71,6 +71,11 @@ public class EditBookBridge implements IActionBridge {
     }
 
     @Override
+    public ActionFeedback onBackspace(JTextField txt) {
+        return null;
+    }
+
+    @Override
     public boolean sameAs(GuiScreen screen, GuiTextField txtField) {
         return false;
     }

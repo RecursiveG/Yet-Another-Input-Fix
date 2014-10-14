@@ -9,6 +9,7 @@ import cpw.mods.fml.common.gameevent.InputEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiScreenBook;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiEditSign;
 import net.minecraft.client.settings.KeyBinding;
@@ -66,6 +67,11 @@ public class YetAnotherInputFix{
             currentTextField=null;
             wrapper.show();
         }
+        if(e.gui instanceof GuiScreenBook){
+            currentGuiScreen=e.gui;
+            currentTextField=null;
+            wrapper.show();
+        }
     }
 
     //Multi-threading is a problem
@@ -89,7 +95,7 @@ public class YetAnotherInputFix{
 
     @SubscribeEvent
     public void onGuiClosing(GuiOpenEvent e){
-        if(e.gui==null&&FMLClientHandler.instance().getClient().currentScreen==currentGuiScreen)
+        if(e.gui==null&&FMLClientHandler.instance().getClient().currentScreen==currentGuiScreen&&wrapper!=null)
             wrapper.hide();
     }
 

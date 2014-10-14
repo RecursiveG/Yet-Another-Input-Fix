@@ -3,6 +3,7 @@ package org.devinprogress.YAIF;
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.inventory.GuiEditSign;
+import org.devinprogress.YAIF.Bridges.CommonBridge;
 import org.devinprogress.YAIF.Bridges.EditSignBridge;
 import org.devinprogress.YAIF.Bridges.GuiChatBridge;
 import org.devinprogress.YAIF.Bridges.IActionBridge;
@@ -90,6 +91,7 @@ public class InputFieldWrapper {
         KeyStroke tab=KeyStroke.getKeyStroke(KeyEvent.VK_TAB,0);
         KeyStroke up=KeyStroke.getKeyStroke(KeyEvent.VK_UP,0);
         KeyStroke down=KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,0);
+        KeyStroke backsp=KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE,0);
 
         //TODO: to see if the `if` can be removed
         Action enterAction = new AbstractAction() {
@@ -122,6 +124,12 @@ public class InputFieldWrapper {
                 if(bridge!=null)DoActions(bridge.onDown(txtField),null);
             }
         };
+        Action backspAction=new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(bridge!=null)DoActions(bridge.onBackspace(txtField),null);
+            }
+        };
         txtField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -147,6 +155,7 @@ public class InputFieldWrapper {
         inputmap.put(tab,"tab");actionmap.put("tab", tabAction);
         inputmap.put(up,"up");actionmap.put("up", upAction);
         inputmap.put(down,"down");actionmap.put("down", downAction);
+        inputmap.put(backsp,"backsp");actionmap.put("backsp",backspAction);
     }
 
     public void setEnabled(boolean flag){  //Reserved for further use
@@ -208,9 +217,8 @@ public class InputFieldWrapper {
         }
         else if(YetAnotherInputFix.currentGuiScreen instanceof GuiEditSign)
             return new EditSignBridge((GuiEditSign)YetAnotherInputFix.currentGuiScreen,this);
-        else
-            return null;
-        //else bridge=new CommonBridge(YetAnotherInputFix.currentTextField, this);
+        //else return null;
+        else return new CommonBridge(YetAnotherInputFix.currentGuiScreen, this);
     }
 
     public void setTextNoEvent(final String str){

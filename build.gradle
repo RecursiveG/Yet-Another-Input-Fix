@@ -22,7 +22,7 @@ group= "org.devinprogress.YAIF" // http://maven.apache.org/guides/mini/guide-nam
 archivesBaseName = "YetAnotherInputFix"
 
 minecraft {
-    version = "1.7.2-10.12.2.1121"
+    version = "1.7.2-10.12.2.1147"
     assetDir = "eclipse/assets"
 }
 

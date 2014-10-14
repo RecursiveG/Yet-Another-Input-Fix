@@ -128,6 +128,14 @@ public class GuiChatBridge implements IActionBridge {
     }
 
     @Override
+    public ActionFeedback onBackspace(JTextField txt) {
+        String str2=txt.getText();
+        str2=str2.substring(0,str2.length()-1);
+        wrapper.setTextNoEvent(str2);
+        return onChange(txt);
+    }
+
+    @Override
     public boolean sameAs(GuiScreen screen, GuiTextField txtField) {
         return this.screen==screen && txtField==txt;
     }
