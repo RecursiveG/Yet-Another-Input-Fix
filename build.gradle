@@ -30,7 +30,7 @@ minecraft {
 jar
 {
     manifest {
-        attributes 'FMLCorePlugin': 'org.devinprogress.YAIF.TransformerLoader'
+        attributes 'FMLCorePlugin': 'org.devinprogress.YAIF.Transformer.Loader'
         attributes 'FMLCorePluginContainsFMLMod': true
     }
 }
