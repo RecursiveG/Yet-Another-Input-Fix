@@ -25,5 +25,6 @@ public interface IActionBridge {
     public ActionFeedback onUp(final JTextField txt);
     public ActionFeedback onDown(final JTextField txt);
     public ActionFeedback onBackspace(final JTextField txt);
+    public void onTabComplete(final JTextField txt);
     public boolean sameAs(GuiScreen screen,GuiTextField txtField);
 }

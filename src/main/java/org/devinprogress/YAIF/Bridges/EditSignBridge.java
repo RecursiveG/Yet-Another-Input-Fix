@@ -18,40 +18,17 @@ public class EditSignBridge implements IActionBridge {
     private InputFieldWrapper wrapper;
     private int currentLine=0;
     private TileEntitySign sign;
-    private Field currentLineField=null;
     public EditSignBridge(GuiEditSign gui,InputFieldWrapper w){
         this.gui=gui;
         this.wrapper=w;
         currentLine=0;
         w.setTextNoEvent("");
-        //TODO: USE AccessTransformer
-        for(Field f:gui.getClass().getDeclaredFields())
-            if(f.getType().equals(TileEntitySign.class)){
-                try {
-                    f.setAccessible(true);
-                    sign = (TileEntitySign)f.get(gui);
-                    break;
-                }catch(Exception e){
-                    e.printStackTrace();
-                }
-            }
-
-        //TODO: modification needed of updated
-        try {
-            currentLineField = gui.getClass().getDeclaredField(YetAnotherInputFix.ObfuscatedEnv ? "field_146851_h" : "editLine");
-            currentLineField.setAccessible(true);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        sign=gui.tileSign;
     }
     @Override
     public ActionFeedback onEnter(JTextField txt) {
         currentLine=currentLine+1&3;
-        try{
-            currentLineField.set(gui,currentLine);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        gui.editLine=currentLine;
         wrapper.setTextNoEvent(sign.signText[currentLine]);
         return null;
     }
@@ -79,11 +56,7 @@ public class EditSignBridge implements IActionBridge {
     @Override
     public ActionFeedback onUp(JTextField txt) {
         currentLine=currentLine-1&3;
-        try{
-            currentLineField.set(gui,currentLine);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        gui.editLine=currentLine;
         wrapper.setTextNoEvent(sign.signText[currentLine]);
         return null;
     }
@@ -91,11 +64,7 @@ public class EditSignBridge implements IActionBridge {
     @Override
     public ActionFeedback onDown(JTextField txt) {
         currentLine=currentLine+1&3;
-        try{
-            currentLineField.set(gui,currentLine);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        gui.editLine=currentLine;
         wrapper.setTextNoEvent(sign.signText[currentLine]);
         return null;
     }
@@ -106,6 +75,11 @@ public class EditSignBridge implements IActionBridge {
         str2=str2.substring(0,str2.length()-1);
         wrapper.setTextNoEvent(str2);
         return onChange(txt);
+    }
+
+    @Override
+    public void onTabComplete(JTextField txt) {
+
     }
 
     @Override

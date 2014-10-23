@@ -1,6 +1,7 @@
-package org.devinprogress.YAIF;
+package org.devinprogress.YAIF.Transformer;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
+import org.devinprogress.YAIF.YetAnotherInputFix;
 
 import java.util.Map;
 
@@ -8,11 +9,11 @@ import java.util.Map;
  * Created by recursiveg on 14-9-12.
  */
 @IFMLLoadingPlugin.MCVersion("1.7.2")
-public class TransformerLoader implements IFMLLoadingPlugin {
+public class Loader implements IFMLLoadingPlugin {
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[] {"org.devinprogress.YAIF.Transformer"};
+        return new String[] {"org.devinprogress.YAIF.Transformer.ASMTransformer"};
     }
 
     @Override
@@ -32,6 +33,6 @@ public class TransformerLoader implements IFMLLoadingPlugin {
 
     @Override
     public String getAccessTransformerClass() {
-        return null;
+        return "org.devinprogress.YAIF.Transformer.AccessTransformer";
     }
 }

@@ -21,7 +21,7 @@ public class GuiChatBridge implements IActionBridge {
     private InputFieldWrapper wrapper=null;
 
     private boolean isCmd=false;
-    private static Method keyTypedMethod=null;
+    //private static Method keyTypedMethod=null;
 
     public GuiChatBridge(GuiTextField textField,GuiChat screen,InputFieldWrapper wrapper){
         this.screen=screen;
@@ -29,42 +29,16 @@ public class GuiChatBridge implements IActionBridge {
         this.wrapper=wrapper;
         wrapper.DoActions(ActionFeedback.SetText,txt.getText());
 
-        //TODO: use AccessTransformer instead of reflection
-        if(keyTypedMethod==null){
-            for(Method m:screen.getClass().getDeclaredMethods()){
-                if(m.getParameterTypes().length==2&&m.getReturnType()==void.class&&m.getParameterTypes()[0]==char.class&&m.getParameterTypes()[1]==int.class){
-                    //The Method Desc "(CI)V" seem to be unique
-                    keyTypedMethod=m;
-                    keyTypedMethod.setAccessible(true);
-                }
-            }
-        }
-
-        for(Field f:screen.getClass().getDeclaredFields()){
-            if(f.getType().equals(String.class)){
-                String def="";
-                try {
-                    f.setAccessible(true);
-                    def=(String)(f.get(screen));
-                }catch(Exception e){
-                    e.printStackTrace();
-                }
-                if(def.equals("/")){
-                    isCmd=true;
-                    break;
-                }
-            }
-        }
+        if (screen.defaultInputFieldText.equals("/"))
+            isCmd=true;
+        else
+            isCmd=false;
     }
 
     @Override
     public ActionFeedback onEnter(JTextField txt) { //send
         this.txt.setText(txt.getText());
-        try {
-            keyTypedMethod.invoke(screen, '\n', 28);//Magic Numbers can be found at http://minecraft.gamepedia.com/Key_Codes
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        screen.keyTyped('\n', 28);//Magic Numbers can be found at http://minecraft.gamepedia.com/Key_Codes
         Keyboard.enableRepeatEvents(false);
         FMLClientHandler.instance().getClient().ingameGUI.getChatGUI().resetScroll();
 
@@ -100,29 +74,25 @@ public class GuiChatBridge implements IActionBridge {
     @Override
     public ActionFeedback onTab(JTextField txt) {
         //You have to listen to S3APacketTabComplete to get the compliance result.
-        YetAnotherInputFix.logger.info("Tab Completion not finished yet.");
+        //YetAnotherInputFix.logger.info("Tab Completion not finished yet.");
+        int cursorPos=txt.getCaretPosition();
+        this.txt.setCursorPosition(cursorPos);
+        screen.keyTyped('\t',15);
+        wrapper.setTextNoEvent(this.txt.getText());
         //TODO: Finish it.
         return null;//return null == return Nothing
     }
 
     @Override
     public ActionFeedback onUp(JTextField txt) {
-        try {
-            keyTypedMethod.invoke(screen, ' ', 200);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        screen.keyTyped( ' ', 200);
         wrapper.setTextNoEvent(this.txt.getText());
         return null;
     }
 
     @Override
     public ActionFeedback onDown(JTextField txt) {
-        try {
-            keyTypedMethod.invoke(screen, ' ', 208);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        screen.keyTyped(' ', 208);
         wrapper.setTextNoEvent(this.txt.getText());
         return null;
     }
@@ -133,6 +103,11 @@ public class GuiChatBridge implements IActionBridge {
         str2=str2.substring(0,str2.length()-1);
         wrapper.setTextNoEvent(str2);
         return onChange(txt);
+    }
+
+    @Override
+    public void onTabComplete(JTextField txt) {
+        wrapper.setTextNoEvent(this.txt.getText());
     }
 
     @Override

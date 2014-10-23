@@ -45,7 +45,7 @@ public class CommonBridge implements IActionBridge{
 
     @Override
     public IActionBridge.ActionFeedback onEsc(JTextField txt) {
-        return IActionBridge.ActionFeedback.Quit;
+        return IActionBridge.ActionFeedback.Nothing;
     }
 
     @Override
@@ -83,6 +83,11 @@ public class CommonBridge implements IActionBridge{
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public void onTabComplete(JTextField txt) {
+
     }
 
     @Override

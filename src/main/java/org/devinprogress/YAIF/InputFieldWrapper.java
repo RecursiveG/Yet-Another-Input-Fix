@@ -78,6 +78,11 @@ public class InputFieldWrapper {
         frame.validate();
     }
 
+    public void onTabComplete(){
+        if(bridge!=null)
+            bridge.onTabComplete(txtField);
+    }
+
     private void bindKeys(){
     //Should be Called Only Once
     //Be careful about txtField.setText(). It will trigger here and further trigger the bridges.
@@ -217,8 +222,8 @@ public class InputFieldWrapper {
         }
         else if(YetAnotherInputFix.currentGuiScreen instanceof GuiEditSign)
             return new EditSignBridge((GuiEditSign)YetAnotherInputFix.currentGuiScreen,this);
-        //else return null;
-        else return new CommonBridge(YetAnotherInputFix.currentGuiScreen, this);
+        else return null;
+        //else return new CommonBridge(YetAnotherInputFix.currentGuiScreen, this);
     }
 
     public void setTextNoEvent(final String str){

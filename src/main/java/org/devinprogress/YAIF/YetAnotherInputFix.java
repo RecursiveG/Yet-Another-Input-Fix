@@ -118,7 +118,7 @@ public class YetAnotherInputFix{
 
     @SubscribeEvent
     public void keyEvents(InputEvent.KeyInputEvent e){
-        System.out.println(String.format("Typedkey=%d",Keyboard.getEventKey()));
+        //System.out.println(String.format("Typedkey=%d",Keyboard.getEventKey()));
     }
 
     private static boolean GuiCanInput(GuiScreen gui){
@@ -141,5 +141,9 @@ public class YetAnotherInputFix{
             UnInputableGui.add(GuiClass);
 
         return hasTextField;
+    }
+
+    public static void onTabComplete(){
+        wrapper.onTabComplete();
     }
 }
