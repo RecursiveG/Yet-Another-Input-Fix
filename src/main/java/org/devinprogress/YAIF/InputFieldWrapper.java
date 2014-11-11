@@ -3,7 +3,6 @@ package org.devinprogress.YAIF;
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.inventory.GuiEditSign;
-import org.devinprogress.YAIF.Bridges.CommonBridge;
 import org.devinprogress.YAIF.Bridges.EditSignBridge;
 import org.devinprogress.YAIF.Bridges.GuiChatBridge;
 import org.devinprogress.YAIF.Bridges.IActionBridge;
@@ -24,7 +23,7 @@ import java.util.Collections;
  * Created by recursiveg on 14-9-11.
  */
 public class InputFieldWrapper {
-    private static final int TextFieldHeight=25;
+    private static final int fontSize=20;
 
     private static boolean hasInitiated=false;
     private boolean enabled=true;      //Reserved for Further Use
@@ -33,8 +32,9 @@ public class InputFieldWrapper {
     private IActionBridge bridge=null;
 
     private AWTGLCanvas canvas = null;
-    private final JFrame frame=new JFrame("Minecraft");
-    private JTextField txtField = null;
+    private JFrame frame=null;
+    private JTextField textField = null;
+    private JPanel panel=null;
 
     public InputFieldWrapper(int Width,int Height){ //Should be Called only once
         if(hasInitiated){
@@ -43,54 +43,66 @@ public class InputFieldWrapper {
         }
         hasInitiated=true;
 
+        // Create Instances
         try {
             canvas = new AWTGLCanvas();
         }catch(Exception e){
             e.printStackTrace();
         }
-        canvas.setFocusable(true);
-        txtField =new JTextField();
+        frame=new JFrame("Minecraft 1.7.10");
+        textField=new JTextField();
+        panel=new JPanel();
 
+        // Setup Canvas
+        canvas.setFocusable(true);
+        try {
+            Display.setParent(canvas);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        canvas.setPreferredSize(new Dimension(Width, Height));
+
+        // Setup TextField
+        //textField.setVisible(false);
+        textField.setVisible(true);
+        textField.setFont(new Font("Times New Roman",Font.PLAIN, fontSize));
+
+        // Setup Panel
+        panel.setLayout(new BorderLayout());
+        panel.add(canvas, BorderLayout.CENTER);
+        panel.add(textField, BorderLayout.PAGE_END);
+        panel.setVisible(true);
+        panel.validate();
+
+        // Setup frame
+        frame.setUndecorated(false);
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        frame.setContentPane(panel);
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 FMLClientHandler.instance().getClient().shutdown();
             }
         });
-        frame.setLayout(new BorderLayout());
-        frame.setVisible(true);
-        frame.add(canvas,BorderLayout.CENTER);
-        try {
-            Display.setParent(canvas);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        frame.setPreferredSize(new Dimension(Width, Height));
-        frame.pack();
-
-        txtField.setVisible(false);
-        txtField.setPreferredSize(new Dimension(Width, TextFieldHeight));
-        bindKeys();
-        frame.add(txtField, BorderLayout.PAGE_END);
-
         frame.pack();
         frame.validate();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 
     public void onTabComplete(){
         if(bridge!=null)
-            bridge.onTabComplete(txtField);
+            bridge.onTabComplete(textField);
     }
 
     private void bindKeys(){
     //Should be Called Only Once
-    //Be careful about txtField.setText(). It will trigger here and further trigger the bridges.
-        InputMap inputmap = txtField.getInputMap();
-        ActionMap actionmap = txtField.getActionMap();
+    //Be careful about textField.setText(). It will trigger here and further trigger the bridges.
+        InputMap inputmap = textField.getInputMap();
+        ActionMap actionmap = textField.getActionMap();
 
-        txtField.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.EMPTY_SET);
-        txtField.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, Collections.EMPTY_SET);
+        textField.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.EMPTY_SET);
+        textField.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, Collections.EMPTY_SET);
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
         KeyStroke esc = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
         KeyStroke tab=KeyStroke.getKeyStroke(KeyEvent.VK_TAB,0);
@@ -102,51 +114,51 @@ public class InputFieldWrapper {
         Action enterAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent event) {
-                if(bridge!=null)DoActions(bridge.onEnter(txtField),null);
+                if(bridge!=null)DoActions(bridge.onEnter(textField),null);
             }
         };
         Action escAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent event) {
-                if(bridge!=null)DoActions(bridge.onEsc(txtField),null);
+                if(bridge!=null)DoActions(bridge.onEsc(textField),null);
             }
         };
         Action tabAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent event) {
-                if(bridge!=null)DoActions(bridge.onTab(txtField),null);
+                if(bridge!=null)DoActions(bridge.onTab(textField),null);
             }
         };
         Action upAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent event) {
-                if(bridge!=null)DoActions(bridge.onUp(txtField),null);
+                if(bridge!=null)DoActions(bridge.onUp(textField),null);
             }
         };
         Action downAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent event) {
-                if(bridge!=null)DoActions(bridge.onDown(txtField),null);
+                if(bridge!=null)DoActions(bridge.onDown(textField),null);
             }
         };
         Action backspAction=new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(bridge!=null)DoActions(bridge.onBackspace(txtField),null);
+                if(bridge!=null)DoActions(bridge.onBackspace(textField),null);
             }
         };
-        txtField.getDocument().addDocumentListener(new DocumentListener() {
+        textField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 if(bridge!=null&&doTriggerOnChangeEvent)
-                    DoActions(bridge.onChange(txtField), null);
+                    DoActions(bridge.onChange(textField), null);
                 doTriggerOnChangeEvent = true;
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
                 if(bridge!=null&&doTriggerOnChangeEvent)
-                    DoActions(bridge.onChange(txtField), null);
+                    DoActions(bridge.onChange(textField), null);
                 doTriggerOnChangeEvent = true;
             }
 
@@ -177,10 +189,10 @@ public class InputFieldWrapper {
         bridge=getBridge();
         if((!shown)&&bridge!=null) {
             shown = true;
-            frame.setSize(new Dimension(frame.getWidth(), frame.getHeight() + TextFieldHeight));
-            txtField.setVisible(true);
+            frame.setSize(new Dimension(frame.getWidth(), frame.getHeight() + fontSize));
+            textField.setVisible(true);
             FMLClientHandler.instance().getClient().setIngameNotInFocus();
-            txtField.requestFocus();
+            textField.requestFocus();
             frame.validate();
         }
     }
@@ -189,8 +201,8 @@ public class InputFieldWrapper {
         bridge=null;
         if(!shown)return;
         shown =false;
-        txtField.setVisible(false);
-        frame.setSize(new Dimension(frame.getWidth(), frame.getHeight() - TextFieldHeight));
+        textField.setVisible(false);
+        frame.setSize(new Dimension(frame.getWidth(), frame.getHeight() - fontSize));
 
         canvas.requestFocusInWindow();
         frame.validate();
@@ -231,8 +243,8 @@ public class InputFieldWrapper {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                txtField.setText(str);
-                txtField.setCaretPosition(txtField.getText().length());
+                textField.setText(str);
+                textField.setCaretPosition(textField.getText().length());
             }
         });
     }

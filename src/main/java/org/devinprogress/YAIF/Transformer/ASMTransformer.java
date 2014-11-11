@@ -57,7 +57,7 @@ public class ASMTransformer implements IClassTransformer {
         mn.instructions.insertBefore(n,new VarInsnNode(Opcodes.ALOAD,0));
         mn.instructions.insertBefore(n,new FieldInsnNode(Opcodes.GETFIELD,obfedClassName.replace('.','/'),HeightName,"I"));
         mn.instructions.insertBefore(n,new MethodInsnNode(Opcodes.INVOKESTATIC,
-                "org/devinprogress/YAIF/YetAnotherInputFix","SetupTextFieldWrapper","(II)V"));
+                "org/devinprogress/YAIF/YetAnotherInputFix","SetupTextFieldWrapper","(II)V",false));
         // Codes are braced by existed TryCatchBlock
         mn.maxStack+=1;
     }
@@ -78,7 +78,7 @@ public class ASMTransformer implements IClassTransformer {
         mn.instructions.insertBefore(n,new VarInsnNode(Opcodes.ILOAD,1));
         mn.instructions.insertBefore(n,new MethodInsnNode(Opcodes.INVOKESTATIC,
                 "org/devinprogress/YAIF/YetAnotherInputFix","TextFieldFocusChange",
-                "(L"+obfedClassName.replace('.','/')+";Z)V"));
+                "(L"+obfedClassName.replace('.','/')+";Z)V",false));
     }
 
     public static void hookPostTabComplete(MethodNode mn){
