@@ -13,7 +13,7 @@ public class Loader implements IFMLLoadingPlugin {
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[] {"org.devinprogress.YAIF.Transformer.ASMTransformer"};
+        return new String[] {ASMTransformer.class.getName()};
     }
 
     @Override
@@ -33,6 +33,6 @@ public class Loader implements IFMLLoadingPlugin {
 
     @Override
     public String getAccessTransformerClass() {
-        return "org.devinprogress.YAIF.Transformer.AccessTransformer";
+        return AccessTransformer.class.getName();
     }
 }

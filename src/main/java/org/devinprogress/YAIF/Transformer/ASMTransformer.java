@@ -12,22 +12,19 @@ import org.objectweb.asm.tree.*;
  */
 public class ASMTransformer implements IClassTransformer {
     private ASMHelper asm=null;
-    //private static boolean obf;
     private static String obfedClassName=null;
 
     public ASMTransformer(){
-        //obf=YetAnotherInputFix.ObfuscatedEnv;
         asm=new ASMHelper(this);
-        asm.add("net.minecraft.client.Minecraft",                    "Z","startGame", "()V", "()V", "insertWrapperStartup");
-        asm.add("net.minecraft.client.gui.GuiTextField",             "b","setFocused","(Z)V","(Z)V","hookGuiTextFocusChange");
-        asm.add("net.minecraft.client.network.NetHandlerPlayClient", "a","handleTabComplete","(Lfz;)V","(Lnet/minecraft/network/play/server/S3APacketTabComplete;)V","hookPostTabComplete");
-        //asm.preProcess(!YetAnotherInputFix.ObfuscatedEnv);
+        asm.hookMethod("net.minecraft.client.Minecraft",                    "func_71384_a",   "startGame",          "()V",                                                         "insertWrapperStartup");
+        asm.hookMethod("net.minecraft.client.gui.GuiTextField",             "func_146195_b",  "setFocused",         "(Z)V",                                                        "hookGuiTextFocusChange");
+        asm.hookMethod("net.minecraft.client.network.NetHandlerPlayClient", "func_147274_a",  "handleTabComplete",  "(Lnet/minecraft/network/play/server/S3APacketTabComplete;)V", "hookPostTabComplete");
     }
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
         obfedClassName=name;
-        return asm.transform(transformedName,bytes);
+        return asm.transform(name,transformedName,bytes);
     }
 
     /* These Transformers are designed for Minecraft version 1.7.2 */
