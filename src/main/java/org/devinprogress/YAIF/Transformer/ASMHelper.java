@@ -78,61 +78,8 @@ public class ASMHelper {
         return n;
     }
 
-    public static AbstractInsnNode getALOAD(MethodNode mn,int index,int val){
-        AbstractInsnNode n=mn.instructions.getFirst();
-        int count=0;
-        while(n!=null){
-            if(n.getOpcode()==Opcodes.ALOAD&&((VarInsnNode)n).var==val){
-                count++;
-                if(count==index)
-                    break;
-            }
-            n=n.getNext();
-        }
-        return n;
-    }
-
-    public static void InsertInvokeStaticBefore(MethodNode mn,AbstractInsnNode n,String targetClass,String targetMethod,String desc){
-        mn.instructions.insertBefore(n,new MethodInsnNode(Opcodes.INVOKESTATIC,
-                targetClass.replace('.','/'),targetMethod,desc));
-    }
-
     public static void InsertInvokeStaticAfter(MethodNode mn,AbstractInsnNode n,String targetClass,String targetMethod,String desc){
         mn.instructions.insert(n, new MethodInsnNode(Opcodes.INVOKESTATIC,
-                targetClass.replace('.', '/'), targetMethod, desc));
-    }
-
-    public class MethodRecord{
-        public String ClassName;
-        public String MethodName;
-        public String MethodNameDeobf;
-        public String Desc;
-        public String DescDeobf;
-        public String ProcessMethodName;
-        public Method ProcessMethod;
-        private boolean flag=false;
-        public MethodRecord(String a,String b,String c,String d,String e,String f){
-            ClassName=a;
-            MethodName=b;
-            MethodNameDeobf=c;
-            Desc=d;
-            DescDeobf=e;
-            ProcessMethodName=f;
-        }
-
-        public void preProcess(boolean Deobf,Object o){
-            if(flag)return;
-
-            if(Deobf){
-                MethodName=MethodNameDeobf;
-                Desc=DescDeobf;
-            }
-            try{
-                ProcessMethod=o.getClass().getDeclaredMethod(ProcessMethodName,MethodNode.class);
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-            flag=true;
-        }
+                targetClass.replace('.', '/'), targetMethod, desc,false));
     }
 }

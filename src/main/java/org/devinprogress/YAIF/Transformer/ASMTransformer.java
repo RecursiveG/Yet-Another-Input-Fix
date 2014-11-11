@@ -27,7 +27,7 @@ public class ASMTransformer implements IClassTransformer {
         return asm.transform(name,transformedName,bytes);
     }
 
-    /* These Transformers are designed for Minecraft version 1.7.2 */
+    /* These Transformers are designed for Minecraft version 1.7.10 */
     public static void insertWrapperStartup(MethodNode mn){
         //Add TextField Wrapper
         //org.devinprogress.YAIF.YetAnotherInputFix.SetupTextFieldWrapper(this.displayWidth, this.displayHeight);
@@ -42,9 +42,9 @@ public class ASMTransformer implements IClassTransformer {
 
         //Be careful of the Exception Labels!!!
         //Insert before INVOKESTATIC net/minecraftforge/client/ForgeHooksClient.createDisplay ()V
-        //11th INVOKESTATIC
+        //10th INVOKESTATIC
 
-        AbstractInsnNode n=ASMHelper.getNthInsnNode(mn,Opcodes.INVOKESTATIC,11);
+        AbstractInsnNode n=ASMHelper.getNthInsnNode(mn,Opcodes.INVOKESTATIC,10);
         String WidthName=YetAnotherInputFix.ObfuscatedEnv?"d":"displayWidth";
         String HeightName=YetAnotherInputFix.ObfuscatedEnv?"e":"displayHeight";
 

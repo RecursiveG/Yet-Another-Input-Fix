@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Created by recursiveg on 14-9-12.
  */
-@IFMLLoadingPlugin.MCVersion("1.7.2")
+@IFMLLoadingPlugin.MCVersion("1.7.10")
 public class Loader implements IFMLLoadingPlugin {
 
     @Override
