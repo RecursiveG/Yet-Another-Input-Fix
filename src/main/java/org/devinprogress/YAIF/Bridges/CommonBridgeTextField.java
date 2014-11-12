@@ -11,11 +11,14 @@ import java.lang.reflect.Method;
 /**
  * Created by recursiveg on 14-9-11.
  */
-public class CommonBridge extends BaseActionBridge {
+public class CommonBridgeTextField extends BaseActionBridge {
     private GuiScreen scr=null;
-    private Method M_keyTyped=null;
+    private GuiTextField txt=null;
     private InputFieldWrapper wrapper=null;
-    public CommonBridge(GuiScreen screen,InputFieldWrapper wrapper){
+    private Method M_keyTyped=null;
+
+    public CommonBridgeTextField(GuiScreen screen,GuiTextField textField,InputFieldWrapper wrapper){
+        YetAnotherInputFix.log("CommonBridgeTextField Initialized. %s",this);
         scr=screen;
         this.wrapper=wrapper;
         try{

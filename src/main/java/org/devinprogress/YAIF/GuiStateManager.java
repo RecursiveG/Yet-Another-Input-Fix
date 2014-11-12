@@ -4,13 +4,11 @@ import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiScreenBook;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiEditSign;
-import org.devinprogress.YAIF.Bridges.BaseActionBridge;
-import org.devinprogress.YAIF.Bridges.CommonBridge;
-import org.devinprogress.YAIF.Bridges.EditSignBridge;
-import org.devinprogress.YAIF.Bridges.GuiChatBridge;
+import org.devinprogress.YAIF.Bridges.*;
+import org.lwjgl.opengl.Display;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
@@ -81,8 +79,10 @@ public class GuiStateManager {
             return new GuiChatBridge(currentTextField,(GuiChat)currentScreen,wrapper);
         else if(currentScreen instanceof GuiEditSign)
             return new EditSignBridge((GuiEditSign)currentScreen,wrapper);
+        else if(hasGuiTextField(currentScreen))
+            return new CommonBridgeTextField(currentScreen,currentTextField,wrapper);
         else
-            return new CommonBridge(currentScreen,wrapper);
+            return new CommonBridgeNoField(currentScreen,wrapper);
     }
 
     public void onTabComplete(GuiScreen screen) {
@@ -95,32 +95,32 @@ public class GuiStateManager {
     }
 
     public void preInitGuiEvent(GuiScreen gui){
-        if(canGuiInput(gui))
+        if(hasGuiTextField(gui))
             incomingScreen=gui;
         else
             incomingScreen=null;
     }
 
     public void postInitGuiEvent(GuiScreen screen) {
-        if (incomingScreen==null) return;
-        incomingScreen=null;
-        if(screen instanceof GuiEditSign){
+        if(screen instanceof GuiEditSign||screen instanceof GuiScreenBook){
             currentScreen=screen;
             bridge=getNewBridge();
             wrapper.setupBridge(bridge);
-        }else if(canGuiInput(screen)) {
-            currentScreen = screen;
+        }
+        if (incomingScreen!=null) {
+            currentScreen = incomingScreen;
+            incomingScreen = null;
         }else{
             wrapper.closeInputField();
             bridge=null;
-            currentScreen=null;
-            currentTextField=null;
-            incomingScreen=null;
+            this.currentScreen=null;
+            this.currentTextField=null;
+            this.incomingScreen=null;
         }
     }
 
     public void nullGuiOpenEvent(GuiScreen currentScreen) {
-        wrapper.releaseCurrentBridge();
+        wrapper.closeInputField();
         bridge=null;
         this.currentScreen=null;
         this.currentTextField=null;
@@ -132,16 +132,10 @@ public class GuiStateManager {
         this.currentScreen=null;
         this.currentTextField=null;
         this.incomingScreen=null;
-        Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-            @Override
-            public void run() {
-                YetAnotherInputFix.log("setIngameFocus()");
-                FMLClientHandler.instance().getClient().setIngameFocus();
-            }
-        });
+        YetAnotherInputFix.needFocus=true;
     }
 
-    private boolean canGuiInput(GuiScreen gui){
+    private boolean hasGuiTextField(GuiScreen gui){
         if(gui==null)return false;
         Class GuiClass=gui.getClass();
         if(UnInputableGui.contains(GuiClass))return false;

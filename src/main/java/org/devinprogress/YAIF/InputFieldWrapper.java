@@ -1,23 +1,14 @@
 package org.devinprogress.YAIF;
 
 import cpw.mods.fml.client.FMLClientHandler;
-import net.minecraft.client.gui.GuiChat;
-import net.minecraft.client.gui.inventory.GuiEditSign;
 import org.devinprogress.YAIF.Bridges.BaseActionBridge;
-import org.devinprogress.YAIF.Bridges.EditSignBridge;
-import org.devinprogress.YAIF.Bridges.GuiChatBridge;
 import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Collections;
 
 /**
  * Created by recursiveg on 14-9-11.
@@ -28,13 +19,13 @@ public class InputFieldWrapper {
     private static boolean hasInitiated=false;
     //private boolean enabled=true;      //Reserved for Further Use
     private boolean shown =false;
-    //private boolean doTriggerOnChangeEvent=true;
     private BaseActionBridge bridge=null;
 
     private AWTGLCanvas canvas = null;
     private JFrame frame=null;
     private JTextField textField = null;
     private JPanel panel=null;
+
 
     public InputFieldWrapper(int Width,int Height){ //Should be Called only once
         if(hasInitiated)
@@ -89,6 +80,7 @@ public class InputFieldWrapper {
     }
 
     public void setupBridge(BaseActionBridge bridge){
+        if(!bridge.needShow())return;
         if(this.bridge!=null)
             throw new RuntimeException("Loading new bridge without releasing previous one");
         this.bridge=bridge;
@@ -105,35 +97,77 @@ public class InputFieldWrapper {
     }
 
     public void closeInputField(){
+        YetAnotherInputFix.log("try closing InputField {shown: %s}",shown);
         if(shown) {
             releaseCurrentBridge();
+            textField.getActionMap().clear();
+            textField.getInputMap().clear();
+            textField.setText("");
             _hide();
             //GuiStateManager.getInstance().inputFieldClosed();
         }
     }
 
+    public void bridgeQuit(){
+        closeInputField();
+        GuiStateManager.getInstance().inputFieldClosed();
+    }
+
     private void _show(){
         if(!shown) {
             shown = true;
-            //frame.setSize(new Dimension(frame.getWidth(), frame.getHeight() + fontSize));
+            canvas.setPreferredSize(canvas.getSize());
             textField.setVisible(true);
+            //panel.validate();
             frame.pack();
             frame.validate();
+            FMLClientHandler.instance().getClient().setIngameNotInFocus();
+            textField.requestFocus();
+        }else {
+            FMLClientHandler.instance().getClient().setIngameNotInFocus();
+            textField.requestFocus();
         }
-        FMLClientHandler.instance().getClient().setIngameNotInFocus();
-        textField.requestFocus();
     }
 
     private void _hide(){
         if(shown){
             shown=false;
-            canvas.requestFocus();
-            textField.setVisible(false);
-            frame.pack();
-            frame.validate();
+            canvas.setPreferredSize(canvas.getSize());
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    textField.setVisible(false);
+                    canvas.requestFocusInWindow();
+                    try {
+                        canvas.makeCurrent();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                    panel.validate();
+                    frame.pack();
+                    frame.validate();
+                }
+            });
         }
     }
 
+    public String getText(){
+        return textField.getText();
+    }
+
+    public void setText(String text){
+        textField.setText(text);
+        textField.setCaretPosition(text.length());
+    }
+
+    public void setText(String text,final int caretPos){
+        textField.setText(text);
+        textField.setCaretPosition(caretPos);
+    }
+
+    public int getCaretPosition() {
+        return textField.getCaretPosition();
+    }
     /*
     private void bindKeys(){
     //Should be Called Only Once
