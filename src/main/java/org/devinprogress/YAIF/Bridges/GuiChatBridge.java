@@ -5,17 +5,14 @@ import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import org.devinprogress.YAIF.InputFieldWrapper;
-import org.devinprogress.YAIF.YetAnotherInputFix;
 import org.lwjgl.input.Keyboard;
 
 import javax.swing.*;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 /**
  * Created by recursiveg on 14-9-13.
  */
-public class GuiChatBridge implements IActionBridge {
+public class GuiChatBridge extends BaseActionBridge {
     private GuiChat screen=null;
     private GuiTextField txt=null;
     private InputFieldWrapper wrapper=null;
@@ -27,14 +24,14 @@ public class GuiChatBridge implements IActionBridge {
         this.screen=screen;
         txt=textField;
         this.wrapper=wrapper;
-        wrapper.DoActions(ActionFeedback.SetText,txt.getText());
+        //wrapper.DoActions(ActionFeedback.SetText,txt.getText());
 
         if (screen.defaultInputFieldText.equals("/"))
             isCmd=true;
         else
             isCmd=false;
     }
-
+/*
     @Override
     public ActionFeedback onEnter(JTextField txt) { //send
         this.txt.setText(txt.getText());
@@ -68,7 +65,7 @@ public class GuiChatBridge implements IActionBridge {
             str=txt.getText();
         }
         this.txt.setText(str);
-        return IActionBridge.ActionFeedback.Nothing;
+        return BaseActionBridge.ActionFeedback.Nothing;
     }
 
     @Override
@@ -117,5 +114,5 @@ public class GuiChatBridge implements IActionBridge {
 
     public boolean isCommand(){
         return isCmd;
-    }
+    }*/
 }

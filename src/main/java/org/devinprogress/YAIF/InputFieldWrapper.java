@@ -3,9 +3,9 @@ package org.devinprogress.YAIF;
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.inventory.GuiEditSign;
+import org.devinprogress.YAIF.Bridges.BaseActionBridge;
 import org.devinprogress.YAIF.Bridges.EditSignBridge;
 import org.devinprogress.YAIF.Bridges.GuiChatBridge;
-import org.devinprogress.YAIF.Bridges.IActionBridge;
 import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
 
@@ -26,10 +26,10 @@ public class InputFieldWrapper {
     private static final int fontSize=20;
 
     private static boolean hasInitiated=false;
-    private boolean enabled=true;      //Reserved for Further Use
+    //private boolean enabled=true;      //Reserved for Further Use
     private boolean shown =false;
-    private boolean doTriggerOnChangeEvent=true;
-    private IActionBridge bridge=null;
+    //private boolean doTriggerOnChangeEvent=true;
+    private BaseActionBridge bridge=null;
 
     private AWTGLCanvas canvas = null;
     private JFrame frame=null;
@@ -37,10 +37,8 @@ public class InputFieldWrapper {
     private JPanel panel=null;
 
     public InputFieldWrapper(int Width,int Height){ //Should be Called only once
-        if(hasInitiated){
-            YetAnotherInputFix.logger.severe("Double Initiation for InputFieldWrapper.");
-            return;
-        }
+        if(hasInitiated)
+            throw new RuntimeException("Double Initiation for InputFieldWrapper.");
         hasInitiated=true;
 
         // Create Instances
@@ -63,8 +61,8 @@ public class InputFieldWrapper {
         canvas.setPreferredSize(new Dimension(Width, Height));
 
         // Setup TextField
-        //textField.setVisible(false);
-        textField.setVisible(true);
+        textField.setVisible(false);
+        //textField.setVisible(true);
         textField.setFont(new Font("Times New Roman",Font.PLAIN, fontSize));
 
         // Setup Panel
@@ -90,11 +88,53 @@ public class InputFieldWrapper {
         frame.setVisible(true);
     }
 
-    public void onTabComplete(){
-        if(bridge!=null)
-            bridge.onTabComplete(textField);
+    public void setupBridge(BaseActionBridge bridge){
+        if(this.bridge!=null)
+            throw new RuntimeException("Loading new bridge without releasing previous one");
+        this.bridge=bridge;
+
+        bridge.bindKeys(textField);
+        _show();
     }
 
+    public void releaseCurrentBridge(){
+        if(bridge!=null) {
+            bridge.unlink();
+            bridge = null;
+        }
+    }
+
+    public void closeInputField(){
+        if(shown) {
+            releaseCurrentBridge();
+            _hide();
+            //GuiStateManager.getInstance().inputFieldClosed();
+        }
+    }
+
+    private void _show(){
+        if(!shown) {
+            shown = true;
+            //frame.setSize(new Dimension(frame.getWidth(), frame.getHeight() + fontSize));
+            textField.setVisible(true);
+            frame.pack();
+            frame.validate();
+        }
+        FMLClientHandler.instance().getClient().setIngameNotInFocus();
+        textField.requestFocus();
+    }
+
+    private void _hide(){
+        if(shown){
+            shown=false;
+            canvas.requestFocus();
+            textField.setVisible(false);
+            frame.pack();
+            frame.validate();
+        }
+    }
+
+    /*
     private void bindKeys(){
     //Should be Called Only Once
     //Be careful about textField.setText(). It will trigger here and further trigger the bridges.
@@ -209,20 +249,20 @@ public class InputFieldWrapper {
         YetAnotherInputFix.needFocus=true;
     }
 
-    public void DoActions(IActionBridge.ActionFeedback action, Object obj){
-        if(action== IActionBridge.ActionFeedback.Quit){
+    public void DoActions(BaseActionBridge.ActionFeedback action, Object obj){
+        if(action== BaseActionBridge.ActionFeedback.Quit){
             hide();
-        }else if(action== IActionBridge.ActionFeedback.Nothing){
+        }else if(action== BaseActionBridge.ActionFeedback.Nothing){
             return;
-        }else if(action== IActionBridge.ActionFeedback.SetText){
+        }else if(action== BaseActionBridge.ActionFeedback.SetText){
             if (obj instanceof String)
                 setTextNoEvent((String)obj);
-        }else if(action== IActionBridge.ActionFeedback.Clean){
+        }else if(action== BaseActionBridge.ActionFeedback.Clean){
             setTextNoEvent("");
         }
     }
 
-    private IActionBridge getBridge(){//Remember to add cases here if new Bridges added.
+    private BaseActionBridge getBridge(){//Remember to add cases here if new Bridges added.
         if(bridge!=null&&bridge.sameAs(YetAnotherInputFix.currentGuiScreen,YetAnotherInputFix.currentTextField))
             return bridge;
         if(YetAnotherInputFix.currentGuiScreen instanceof GuiChat) {
@@ -247,5 +287,5 @@ public class InputFieldWrapper {
                 textField.setCaretPosition(textField.getText().length());
             }
         });
-    }
+    }*/
 }

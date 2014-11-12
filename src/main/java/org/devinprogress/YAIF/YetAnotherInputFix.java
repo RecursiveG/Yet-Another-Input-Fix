@@ -16,6 +16,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
+import org.apache.logging.log4j.LogManager;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 
@@ -27,52 +28,63 @@ import java.util.logging.Logger;
  * Created by recursiveg on 14-9-10.
  */
 
-@Mod(modid="YAIF", name="YetAnotherInputFix", version="1.7.2", dependencies="required-after:FML")
+@Mod(modid="YAIF", name="YetAnotherInputFix", version="0.2-dev", dependencies="required-after:FML")
 public class YetAnotherInputFix{
-
+    private static GuiStateManager stateMachine=null;
     public static boolean ObfuscatedEnv=true;
-    private static Set<Class<?>> InputableGui = new HashSet<Class<?>>();
-    private static Set<Class<?>> UnInputableGui = new HashSet<Class<?>>();
-    public static GuiScreen currentGuiScreen = null;
-    public static GuiTextField currentTextField = null;
-    private static InputFieldWrapper wrapper =null;
-    public static GuiTextField txt = null;
-    public static final Logger logger=Logger.getLogger("YAIF");
     public static boolean needFocus=false;
-    private KeyBinding debugKey=new KeyBinding("Debug Key",Keyboard.KEY_Y,"YAIF");
 
+    public static void log(String msg,Object... args){
+        LogManager.getLogger("YAIF").info(String.format(msg,args));
+    }
     //Will be called before the Constructor! Be careful.
     public static void SetupTextFieldWrapper(int W, int H){
-        wrapper=new InputFieldWrapper(W,H);
+        log("Now setting Wrapper {Width:%d, Hight:%d}",W,H);
+        stateMachine=GuiStateManager.getInstance();
+        stateMachine.setWrapper(new InputFieldWrapper(W,H));
+    }
+
+    //Called from GuiTextField.setFocused() due to ASMTransformed
+    public static void TextFieldFocusChange(GuiTextField textField, boolean isFocused) {
+        log("TextField State Changed {textField:%s, focused:%s}",textField.toString(),isFocused);
+        stateMachine.TextFieldFocusChanged(FMLClientHandler.instance().getClient().currentScreen,textField,isFocused);
+    }
+
+    //called from net.minecraft.client.network.NetHandlerPlayClient.handleTabComplete
+    public static void onTabComplete(){
+        log("TabComplete Packet Received");
+        stateMachine.onTabComplete(FMLClientHandler.instance().getClient().currentScreen);
     }
 
     @Mod.EventHandler
     public void load(FMLInitializationEvent event) {
-        ClientRegistry.registerKeyBinding(debugKey);
+        log("FMLMod Initialization");
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
     }
 
     @SubscribeEvent
-    public void onKeyPressed(InputEvent.KeyInputEvent e){
-        if(debugKey.isPressed()){
-            wrapper.hide();
-        }
+    public void onGuiChange(GuiScreenEvent.InitGuiEvent.Post e) {
+        log("PostGuiChangeEvent {GUI:%s}",e.gui.toString());
+        stateMachine.postInitGuiEvent(e.gui);
     }
 
     @SubscribeEvent
-    public void onGuiChange(GuiScreenEvent.InitGuiEvent.Post e) {
-        if(e.gui instanceof GuiEditSign){
-            currentGuiScreen=e.gui;
-            currentTextField=null;
-            wrapper.show();
-        }
-        if(e.gui instanceof GuiScreenBook){
-            currentGuiScreen=e.gui;
-            currentTextField=null;
-            wrapper.show();
+    public void preGuiInit(GuiScreenEvent.InitGuiEvent.Pre e){
+        log("PreGuiInitEvent {GUI:%s}",e.gui.toString());
+        stateMachine.preInitGuiEvent(e.gui);
+    }
+
+    @SubscribeEvent
+    public void onGuiOpen(GuiOpenEvent e){
+        if(e.gui==null) {
+            log("NullGui Open");
+            stateMachine.nullGuiOpenEvent(FMLClientHandler.instance().getClient().currentScreen);
         }
     }
+
+
+
 
     //Multi-threading is a problem
     //TODO: UGLY PATCH!!!
@@ -91,59 +103,5 @@ public class YetAnotherInputFix{
                 needFocus=false;
             }
         }
-    }
-
-    @SubscribeEvent
-    public void onGuiClosing(GuiOpenEvent e){
-        if(e.gui==null&&FMLClientHandler.instance().getClient().currentScreen==currentGuiScreen&&wrapper!=null)
-            wrapper.hide();
-    }
-
-    //Called from GuiTextField.setFocused() due to ASMTransformed
-    public static void TextFieldFocusChange(GuiTextField textField, boolean isFocused) {
-        if (isFocused) {
-            GuiScreen sc= FMLClientHandler.instance().getClient().currentScreen;
-            if(GuiCanInput(sc)){
-                currentGuiScreen=sc;
-                currentTextField=textField;
-                wrapper.show();
-            }
-        } else {
-            if (currentTextField == textField) {
-                currentTextField = null;
-                wrapper.hide();
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void keyEvents(InputEvent.KeyInputEvent e){
-        //System.out.println(String.format("Typedkey=%d",Keyboard.getEventKey()));
-    }
-
-    private static boolean GuiCanInput(GuiScreen gui){
-        if(gui==null)return false;
-        Class GuiClass=gui.getClass();
-        if(UnInputableGui.contains(GuiClass))return false;
-        if(InputableGui.contains(GuiClass))return true;
-        boolean hasTextField = false;
-
-        for (Field f : GuiClass.getDeclaredFields()) {
-            if (f.getType() == GuiTextField.class) {
-                hasTextField = true;
-                break;
-            }
-        }
-
-        if (hasTextField)
-            InputableGui.add(GuiClass);
-        else
-            UnInputableGui.add(GuiClass);
-
-        return hasTextField;
-    }
-
-    public static void onTabComplete(){
-        wrapper.onTabComplete();
     }
 }

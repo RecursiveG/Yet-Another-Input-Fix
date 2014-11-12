@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 /**
  * Created by recursiveg on 14-9-11.
  */
-public class CommonBridge implements IActionBridge{
+public class CommonBridge extends BaseActionBridge {
     private GuiScreen scr=null;
     private Method M_keyTyped=null;
     private InputFieldWrapper wrapper=null;
@@ -25,8 +25,10 @@ public class CommonBridge implements IActionBridge{
             e.printStackTrace();
         }
     }
+
+    /*
     @Override
-    public IActionBridge.ActionFeedback onEnter(JTextField txt) { //send msg
+    public BaseActionBridge.ActionFeedback onEnter(JTextField txt) { //send msg
         try{
             String str=txt.getText();
             if(str.length()==0){
@@ -44,18 +46,18 @@ public class CommonBridge implements IActionBridge{
     }
 
     @Override
-    public IActionBridge.ActionFeedback onEsc(JTextField txt) {
-        return IActionBridge.ActionFeedback.Nothing;
+    public BaseActionBridge.ActionFeedback onEsc(JTextField txt) {
+        return BaseActionBridge.ActionFeedback.Nothing;
     }
 
     @Override
-    public IActionBridge.ActionFeedback onChange(JTextField txt) {
-        return IActionBridge.ActionFeedback.Nothing;
+    public BaseActionBridge.ActionFeedback onChange(JTextField txt) {
+        return BaseActionBridge.ActionFeedback.Nothing;
     }
 
     @Override
-    public IActionBridge.ActionFeedback onTab(JTextField txt) {
-        return IActionBridge.ActionFeedback.Nothing;
+    public BaseActionBridge.ActionFeedback onTab(JTextField txt) {
+        return BaseActionBridge.ActionFeedback.Nothing;
     }
 
     @Override
@@ -93,5 +95,5 @@ public class CommonBridge implements IActionBridge{
     @Override
     public boolean sameAs(GuiScreen screen, GuiTextField txtField) {
         return scr==screen;
-    }
+    }*/
 }

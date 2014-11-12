@@ -5,15 +5,13 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiEditSign;
 import net.minecraft.tileentity.TileEntitySign;
 import org.devinprogress.YAIF.InputFieldWrapper;
-import org.devinprogress.YAIF.YetAnotherInputFix;
 
 import javax.swing.*;
-import java.lang.reflect.Field;
 
 /**
  * Created by recursiveg on 14-9-21.
  */
-public class EditSignBridge implements IActionBridge {
+public class EditSignBridge extends BaseActionBridge {
     private GuiEditSign gui;
     private InputFieldWrapper wrapper;
     private int currentLine=0;
@@ -22,9 +20,10 @@ public class EditSignBridge implements IActionBridge {
         this.gui=gui;
         this.wrapper=w;
         currentLine=0;
-        w.setTextNoEvent("");
+        //w.setTextNoEvent("");
         sign=gui.tileSign;
     }
+    /*
     @Override
     public ActionFeedback onEnter(JTextField txt) {
         currentLine=currentLine+1&3;
@@ -85,5 +84,5 @@ public class EditSignBridge implements IActionBridge {
     @Override
     public boolean sameAs(GuiScreen screen, GuiTextField txtField) {
         return screen==gui;
-    }
+    }*/
 }
