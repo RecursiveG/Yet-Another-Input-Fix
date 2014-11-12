@@ -91,7 +91,7 @@ public class InputFieldWrapper {
 
     public void releaseCurrentBridge(){
         if(bridge!=null) {
-            bridge.unlink();
+            bridge.unlink(textField);
             bridge = null;
         }
     }
@@ -156,6 +156,8 @@ public class InputFieldWrapper {
     }
 
     public void setText(String text){
+        if(text.length()==0&&textField.getText().length()==0)
+            bridge.releaseObstacleFlag();
         textField.setText(text);
         textField.setCaretPosition(text.length());
     }

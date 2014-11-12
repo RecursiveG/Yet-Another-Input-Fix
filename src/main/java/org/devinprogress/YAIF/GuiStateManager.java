@@ -23,7 +23,7 @@ public class GuiStateManager {
     private GuiScreen currentScreen=null,incomingScreen=null;
     private GuiTextField currentTextField=null;
     private BaseActionBridge bridge=null;
-    private Set<Class> InputableGui=new HashSet<Class>();
+    private Set<Class> InputableGui=new HashSet<Class>(){{add(GuiEditSign.class);add(GuiScreenBook.class);}};
     private Set<Class> UnInputableGui=new HashSet<Class>();
 
     private GuiStateManager(){
@@ -85,7 +85,7 @@ public class GuiStateManager {
             return new CommonBridgeNoField(currentScreen,wrapper);
     }
 
-    public void onTabComplete(GuiScreen screen) {
+    public void onTabCompletePacket(GuiScreen screen) {
         GuiChat chatScreen=null;
         if(screen instanceof GuiChat)
             chatScreen=(GuiChat)screen;
@@ -121,6 +121,8 @@ public class GuiStateManager {
 
     public void nullGuiOpenEvent(GuiScreen currentScreen) {
         wrapper.closeInputField();
+        if(currentScreen instanceof GuiEditSign)
+            YetAnotherInputFix.needFocus=true;
         bridge=null;
         this.currentScreen=null;
         this.currentTextField=null;

@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import org.devinprogress.YAIF.InputFieldWrapper;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -17,8 +18,10 @@ import java.util.Collections;
  */
 public abstract class BaseActionBridge {
     protected boolean textChangedByBridge=false;
+    private DocumentListener documentListener=null;
+
     protected void setListenDocumentEvent(JTextField textField){
-        textField.getDocument().addDocumentListener(new DocumentListener() {
+        documentListener=new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 if(!textChangedByBridge){
@@ -38,7 +41,8 @@ public abstract class BaseActionBridge {
             @Override
             public void changedUpdate(DocumentEvent e) {
             }
-        });
+        };
+        textField.getDocument().addDocumentListener(documentListener);
     }
 
     protected void textUpdated(){}
@@ -52,7 +56,10 @@ public abstract class BaseActionBridge {
         textField.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.EMPTY_SET);
         textField.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, Collections.EMPTY_SET);
     }
-    public void unlink(){ }
+    public void unlink(JTextField t){
+        if(documentListener!=null)
+            t.getDocument().removeDocumentListener(documentListener);
+    }
     public void onTabComplete(GuiChat chatScreen){
         throw new RuntimeException("WTF TabComplete?!");
     }
@@ -63,5 +70,8 @@ public abstract class BaseActionBridge {
     }
     protected void dispatch(Runnable action){
         Minecraft.getMinecraft().addScheduledTask(action);
+    }
+    public void releaseObstacleFlag(){
+        textChangedByBridge=false;
     }
 }

@@ -1,28 +1,16 @@
 package org.devinprogress.YAIF;
 
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.InputEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import net.minecraft.client.gui.GuiNewChat;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiScreenBook;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.inventory.GuiEditSign;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
-
-import java.lang.reflect.Field;
-import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * Created by recursiveg on 14-9-10.
@@ -53,7 +41,7 @@ public class YetAnotherInputFix{
     //called from net.minecraft.client.network.NetHandlerPlayClient.handleTabComplete
     public static void onTabComplete(){
         log("TabComplete Packet Received");
-        stateMachine.onTabComplete(FMLClientHandler.instance().getClient().currentScreen);
+        stateMachine.onTabCompletePacket(FMLClientHandler.instance().getClient().currentScreen);
     }
 
     @Mod.EventHandler
@@ -82,9 +70,6 @@ public class YetAnotherInputFix{
             stateMachine.nullGuiOpenEvent(FMLClientHandler.instance().getClient().currentScreen);
         }
     }
-
-
-
 
     //Multi-threading is a problem
     //TODO: UGLY PATCH!!!

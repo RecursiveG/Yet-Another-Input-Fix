@@ -84,6 +84,6 @@ public class ASMTransformer implements IClassTransformer {
     public static void hookPostTabComplete(MethodNode mn){
         AbstractInsnNode n=ASMHelper.getNthInsnNode(mn,Opcodes.INVOKEVIRTUAL,2);
         ASMHelper.InsertInvokeStaticAfter(mn,n,"org.devinprogress.YAIF.YetAnotherInputFix",
-                "onTabComplete","()V");
+                "onTabCompletePacket","()V");
     }
 }
