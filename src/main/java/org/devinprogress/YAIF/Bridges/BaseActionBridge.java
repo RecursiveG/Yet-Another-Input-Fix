@@ -59,6 +59,7 @@ public abstract class BaseActionBridge {
     public void unlink(JTextField t){
         if(documentListener!=null)
             t.getDocument().removeDocumentListener(documentListener);
+        t.setText("");
     }
     public void onTabComplete(GuiChat chatScreen){
         throw new RuntimeException("WTF TabComplete?!");

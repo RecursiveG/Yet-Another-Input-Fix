@@ -39,7 +39,7 @@ public class YetAnotherInputFix{
     }
 
     //called from net.minecraft.client.network.NetHandlerPlayClient.handleTabComplete
-    public static void onTabComplete(){
+    public static void onTabCompletePacket(){
         log("TabComplete Packet Received");
         stateMachine.onTabCompletePacket(FMLClientHandler.instance().getClient().currentScreen);
     }

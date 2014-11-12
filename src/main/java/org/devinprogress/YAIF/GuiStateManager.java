@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiScreenBook;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiEditSign;
 import org.devinprogress.YAIF.Bridges.*;
 import org.lwjgl.opengl.Display;
@@ -51,8 +52,9 @@ public class GuiStateManager {
                 bridge=getNewBridge();
                 wrapper.setupBridge(bridge);
             }else{//the TextField in a new bridge
-                if(screen==incomingScreen) {
-                    currentScreen = incomingScreen;
+                if(screen==incomingScreen||screen==currentScreen) {
+                    currentScreen = screen;
+                    incomingScreen=null;
                     currentTextField = textField;
                     bridge = getNewBridge();
                     wrapper.setupBridge(bridge);/*
@@ -71,6 +73,8 @@ public class GuiStateManager {
                 bridge = null;
                 currentTextField=null;
             }
+            if(currentScreen instanceof GuiContainerCreative)
+                wrapper.closeInputField();
         }
     }
 
@@ -79,6 +83,8 @@ public class GuiStateManager {
             return new GuiChatBridge(currentTextField,(GuiChat)currentScreen,wrapper);
         else if(currentScreen instanceof GuiEditSign)
             return new EditSignBridge((GuiEditSign)currentScreen,wrapper);
+        else if(currentScreen instanceof GuiContainerCreative)
+            return new CreativeInventoryBridge((GuiContainerCreative)currentScreen,currentTextField,wrapper);
         else if(hasGuiTextField(currentScreen))
             return new CommonBridgeTextField(currentScreen,currentTextField,wrapper);
         else
@@ -104,13 +110,16 @@ public class GuiStateManager {
     public void postInitGuiEvent(GuiScreen screen) {
         if(screen instanceof GuiEditSign||screen instanceof GuiScreenBook){
             currentScreen=screen;
+            incomingScreen=null;
             bridge=getNewBridge();
             wrapper.setupBridge(bridge);
         }
-        if (incomingScreen!=null) {
+        if (incomingScreen==screen) {
             currentScreen = incomingScreen;
             incomingScreen = null;
-        }else{
+        }else if(currentScreen!=null){
+            return;
+        }else if(bridge==null){
             wrapper.closeInputField();
             bridge=null;
             this.currentScreen=null;
