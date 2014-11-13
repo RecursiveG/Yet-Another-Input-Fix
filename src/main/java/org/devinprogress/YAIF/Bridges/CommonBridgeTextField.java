@@ -91,9 +91,14 @@ public class CommonBridgeTextField extends BaseActionBridge {
         dispatch(new Runnable() {
             @Override
             public void run() {
-                txt.setText(finStr.substring(0, finStr.length() - 1));
                 try {
-                    keyTypedMethod.invoke(scr, finStr.charAt(finStr.length() - 1), -1);
+                    if(finStr.equals("")){
+                        txt.setText("X");
+                        keyTypedMethod.invoke(scr, ' ',14);
+                    }else {
+                        txt.setText(finStr.substring(0, finStr.length() - 1));
+                        keyTypedMethod.invoke(scr, finStr.charAt(finStr.length() - 1), -1);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

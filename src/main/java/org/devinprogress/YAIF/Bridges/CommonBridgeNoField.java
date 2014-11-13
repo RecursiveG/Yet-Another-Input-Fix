@@ -46,7 +46,19 @@ public class CommonBridgeNoField extends BaseActionBridge{
             @Override
             public void actionPerformed(ActionEvent e) {
                 final String str=wrapper.getText();
-                //textChangedByBridge=true;
+                if(str.equals("")){
+                    dispatch(new Runnable() {
+                        @Override
+                        public void run() {
+                            try{
+                                keyTypedMethod.invoke(gui,'\n',28);
+                            }catch(Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    return;
+                }
                 wrapper.setText("");
                 dispatch(new Runnable() {
                     @Override
@@ -67,6 +79,29 @@ public class CommonBridgeNoField extends BaseActionBridge{
             public void actionPerformed(ActionEvent e) {
                 YetAnotherInputFix.log("CommonBridgeNoField ESC Pressed");
                 wrapper.bridgeQuit();
+            }
+        });
+
+        bindKey(tf, KeyEvent.VK_BACK_SPACE, "backsp", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String t=wrapper.getText();
+                if(t.equals("")){
+                    dispatch(new Runnable() {
+                        @Override
+                        public void run() {
+                            try{
+                                keyTypedMethod.invoke(gui,' ',14);
+                            }catch(Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    return;
+                }
+                int pos=wrapper.getCaretPosition();
+                t=t.substring(0,pos-1)+t.substring(pos);
+                wrapper.setText(t,pos-1);
             }
         });
     }

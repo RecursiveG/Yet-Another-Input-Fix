@@ -75,8 +75,10 @@ public class GuiStateManager {
                 bridge = null;
                 currentTextField=null;
             }
-            if(currentScreen instanceof GuiContainerCreative)
+            if(currentScreen instanceof GuiContainerCreative) {
                 wrapper.closeInputField();
+                bridge=null;
+            }
         }
     }
 
@@ -88,7 +90,7 @@ public class GuiStateManager {
         else if(currentScreen instanceof GuiContainerCreative)
             return new CreativeInventoryBridge((GuiContainerCreative)currentScreen,currentTextField,wrapper);
         else if(currentScreen instanceof GuiScreenBook)
-            return new GuiBookBridge(currentScreen,wrapper);
+            return new GuiBookBridge((GuiScreenBook)currentScreen,wrapper);
         else if(hasGuiTextField(currentScreen))
             return new CommonBridgeTextField(currentScreen,currentTextField,wrapper);
         else//How could this be possible?!
@@ -110,6 +112,7 @@ public class GuiStateManager {
         else {
             incomingScreen = null;
             wrapper.closeInputField();
+            bridge=null;
         }
     }
 
@@ -145,7 +148,7 @@ public class GuiStateManager {
 
     public void nullGuiOpenEvent(GuiScreen currentScreen) {
         wrapper.closeInputField();
-        if(currentScreen instanceof GuiEditSign)
+        if(currentScreen instanceof GuiEditSign||currentScreen instanceof GuiScreenBook)
             YetAnotherInputFix.needFocus=true;
         bridge=null;
         this.currentScreen=null;
