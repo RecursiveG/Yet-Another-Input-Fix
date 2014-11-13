@@ -19,7 +19,7 @@ import java.util.Collections;
 public abstract class BaseActionBridge {
     protected boolean textChangedByBridge=false;
     private DocumentListener documentListener=null;
-
+    public void postGuiInit(){}
     protected void setListenDocumentEvent(JTextField textField){
         documentListener=new DocumentListener() {
             @Override

@@ -1,6 +1,7 @@
 package org.devinprogress.YAIF;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
 import org.devinprogress.YAIF.Bridges.BaseActionBridge;
 import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
@@ -70,7 +71,8 @@ public class InputFieldWrapper {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                FMLClientHandler.instance().getClient().shutdown();
+                FMLCommonHandler.instance().exitJava(0,false);
+                //FMLClientHandler.instance().getClient().shutdown();
             }
         });
         frame.pack();
@@ -84,7 +86,7 @@ public class InputFieldWrapper {
         if(this.bridge!=null)
             throw new RuntimeException("Loading new bridge without releasing previous one");
         this.bridge=bridge;
-
+        textField.setText("");
         bridge.bindKeys(textField);
         _show();
     }
@@ -93,6 +95,7 @@ public class InputFieldWrapper {
         if(bridge!=null) {
             bridge.unlink(textField);
             bridge = null;
+            textField.setText("");
         }
     }
 

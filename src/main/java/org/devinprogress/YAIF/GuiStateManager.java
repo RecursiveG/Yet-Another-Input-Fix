@@ -18,6 +18,8 @@ import java.util.Set;
 /**
  * Created by recursiveg on 14-11-11.
  */
+
+/* NEVER try to figure out how this f**king machine works */
 public class GuiStateManager {
     private static GuiStateManager INSTANCE=null;
     private InputFieldWrapper wrapper=null;
@@ -85,9 +87,11 @@ public class GuiStateManager {
             return new EditSignBridge((GuiEditSign)currentScreen,wrapper);
         else if(currentScreen instanceof GuiContainerCreative)
             return new CreativeInventoryBridge((GuiContainerCreative)currentScreen,currentTextField,wrapper);
+        else if(currentScreen instanceof GuiScreenBook)
+            return new GuiBookBridge(currentScreen,wrapper);
         else if(hasGuiTextField(currentScreen))
             return new CommonBridgeTextField(currentScreen,currentTextField,wrapper);
-        else
+        else//How could this be possible?!
             return new CommonBridgeNoField(currentScreen,wrapper);
     }
 
@@ -103,8 +107,10 @@ public class GuiStateManager {
     public void preInitGuiEvent(GuiScreen gui){
         if(hasGuiTextField(gui))
             incomingScreen=gui;
-        else
-            incomingScreen=null;
+        else {
+            incomingScreen = null;
+            wrapper.closeInputField();
+        }
     }
 
     public void postInitGuiEvent(GuiScreen screen) {
@@ -114,17 +120,26 @@ public class GuiStateManager {
             bridge=getNewBridge();
             wrapper.setupBridge(bridge);
         }
-        if (incomingScreen==screen) {
-            currentScreen = incomingScreen;
-            incomingScreen = null;
-        }else if(currentScreen!=null){
+/*
+        if(currentScreen!=null)
             return;
-        }else if(bridge==null){
+
+        if(bridge==null){
             wrapper.closeInputField();
             bridge=null;
             this.currentScreen=null;
             this.currentTextField=null;
             this.incomingScreen=null;
+        }else{
+            bridge.postGuiInit();
+        }
+           */
+
+        if (incomingScreen==screen) {
+            currentScreen = incomingScreen;
+            incomingScreen = null;
+        }else if(bridge!=null){
+            bridge.postGuiInit();
         }
     }
 

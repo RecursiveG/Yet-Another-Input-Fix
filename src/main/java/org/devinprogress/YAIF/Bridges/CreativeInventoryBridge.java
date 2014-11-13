@@ -58,6 +58,6 @@ public class CreativeInventoryBridge extends BaseActionBridge{
         }else {
             searchField.setText(str);
         }
-        //gui.updateCreativeSearch();
+        gui.updateCreativeSearch();
     }
 }

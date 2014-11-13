@@ -2,101 +2,108 @@ package org.devinprogress.YAIF.Bridges;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import org.devinprogress.YAIF.GuiStateManager;
 import org.devinprogress.YAIF.InputFieldWrapper;
 import org.devinprogress.YAIF.YetAnotherInputFix;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.lang.reflect.Method;
 
 /**
  * Created by recursiveg on 14-9-11.
  */
+
 public class CommonBridgeTextField extends BaseActionBridge {
     private GuiScreen scr=null;
     private GuiTextField txt=null;
     private InputFieldWrapper wrapper=null;
-    private Method M_keyTyped=null;
+    private Method keyTypedMethod=null;
 
     public CommonBridgeTextField(GuiScreen screen,GuiTextField textField,InputFieldWrapper wrapper){
         YetAnotherInputFix.log("CommonBridgeTextField Initialized. %s",this);
         scr=screen;
         this.wrapper=wrapper;
+        txt=textField;
+
+        this.wrapper=wrapper;
         try{
-            M_keyTyped=scr.getClass().getDeclaredMethod(YetAnotherInputFix.ObfuscatedEnv?"func_73869_a":"keyTyped",char.class,int.class);
-            M_keyTyped.setAccessible(true);
+            keyTypedMethod=scr.getClass().getDeclaredMethod(YetAnotherInputFix.ObfuscatedEnv?"func_73869_a":"keyTyped",char.class,int.class);
+            keyTypedMethod.setAccessible(true);
         }catch(Exception e){
             e.printStackTrace();
         }
     }
 
-    /*
     @Override
-    public BaseActionBridge.ActionFeedback onEnter(JTextField txt) { //send msg
-        try{
-            String str=txt.getText();
-            if(str.length()==0){
-                M_keyTyped.invoke(scr,'\n',28);
-            }else{
-                for(int i=0;i<str.length();i++){
-                    M_keyTyped.invoke(scr,str.charAt(i),-1);
+    public boolean needShow(){
+        if(keyTypedMethod==null){
+            YetAnotherInputFix.log("failed to determine keyTypedMethod @%s",scr);
+            return false;
+        }
+        //return System.getProperty("YAIF.useCommonBridgeTextField","false").equals("true");
+        return true;
+    }
+
+    @Override
+    public void bindKeys(JTextField tf){
+        super.bindKeys(tf);
+
+        bindKey(tf, KeyEvent.VK_ENTER,"enter", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                txt.setText(wrapper.getText());
+                GuiStateManager.getInstance().TextFieldFocusChanged(scr,txt,false);
+                wrapper.closeInputField();
+            }
+        });
+
+        bindKey(tf, KeyEvent.VK_ESCAPE, "esc", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                txt.setText(wrapper.getText());
+                GuiStateManager.getInstance().TextFieldFocusChanged(scr,txt,false);
+                wrapper.closeInputField();
+            }
+        });
+        wrapper.setText(txt.getText());
+        setListenDocumentEvent(tf);
+    }
+
+    @Override
+    protected void textUpdated(){
+        String str=wrapper.getText();
+        int lim=txt.getMaxStringLength();
+        final String finStr;
+        if(str.length()>lim){
+            finStr=str.substring(0,lim);
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    textChangedByBridge=true;
+                    wrapper.setText(finStr);
                 }
-                wrapper.setTextNoEvent("");
-            }
-        }catch(Exception e){
-            e.printStackTrace();
+            });
+        }else{
+            finStr=str;
         }
-        return null;
-    }
-
-    @Override
-    public BaseActionBridge.ActionFeedback onEsc(JTextField txt) {
-        return BaseActionBridge.ActionFeedback.Nothing;
-    }
-
-    @Override
-    public BaseActionBridge.ActionFeedback onChange(JTextField txt) {
-        return BaseActionBridge.ActionFeedback.Nothing;
-    }
-
-    @Override
-    public BaseActionBridge.ActionFeedback onTab(JTextField txt) {
-        return BaseActionBridge.ActionFeedback.Nothing;
-    }
-
-    @Override
-    public ActionFeedback onUp(JTextField txt) {
-        return null;
-    }
-
-    @Override
-    public ActionFeedback onDown(JTextField txt) {
-        return null;
-    }
-
-    @Override
-    public ActionFeedback onBackspace(JTextField txt) {
-        try{
-            String str=txt.getText();
-            if(str.length()==0) {
-                M_keyTyped.invoke(scr, ' ', 14);
-            }else{
-                String str2=txt.getText();
-                str2=str2.substring(0,str2.length()-1);
-                wrapper.setTextNoEvent(str2);
+        dispatch(new Runnable() {
+            @Override
+            public void run() {
+                txt.setText(finStr.substring(0, finStr.length() - 1));
+                try {
+                    keyTypedMethod.invoke(scr, finStr.charAt(finStr.length() - 1), -1);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        return null;
+        });
     }
 
     @Override
-    public void onTabComplete(JTextField txt) {
-
+    public void postGuiInit(){
+        textChangedByBridge=true;
+        wrapper.setText(txt.getText());
     }
-
-    @Override
-    public boolean sameAs(GuiScreen screen, GuiTextField txtField) {
-        return scr==screen;
-    }*/
 }
