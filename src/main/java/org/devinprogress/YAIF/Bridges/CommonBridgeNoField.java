@@ -1,6 +1,7 @@
 package org.devinprogress.YAIF.Bridges;
 
 import net.minecraft.client.gui.GuiScreen;
+import org.devinprogress.YAIF.GuiStateManager;
 import org.devinprogress.YAIF.InputFieldWrapper;
 import org.devinprogress.YAIF.YetAnotherInputFix;
 
@@ -77,8 +78,9 @@ public class CommonBridgeNoField extends BaseActionBridge{
         bindKey(tf, KeyEvent.VK_ESCAPE, "esc", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                YetAnotherInputFix.log("CommonBridgeNoField ESC Pressed");
-                wrapper.bridgeQuit();
+                GuiStateManager.getInstance().TextFieldFocusChanged(gui,null,false);
+                wrapper.closeInputField();
+                //wrapper.bridgeQuit();
             }
         });
 
@@ -100,6 +102,7 @@ public class CommonBridgeNoField extends BaseActionBridge{
                     return;
                 }
                 int pos=wrapper.getCaretPosition();
+                if(pos==0)return;
                 t=t.substring(0,pos-1)+t.substring(pos);
                 wrapper.setText(t,pos-1);
             }
