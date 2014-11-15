@@ -20,7 +20,6 @@ import org.lwjgl.opengl.Display;
 public class YetAnotherInputFix{
     private static GuiStateManager stateMachine=null;
     public static boolean ObfuscatedEnv=true;
-    public static boolean needFocus=false;
 
     public static void log(String msg,Object... args){
         LogManager.getLogger("YAIF").info(String.format(msg,args));
@@ -73,7 +72,12 @@ public class YetAnotherInputFix{
 
     //Multi-threading is a problem
     //TODO: UGLY PATCH!!!
-    //TODO: use ASM to reduce potential lag
+    //TODO: Use better ways to deal with the problems addressed below
+    public static boolean needFocus=false;
+    public static boolean needCurrent=false;
+    private static int downCounter=0;
+    private static int logCounter=0;
+
     @SubscribeEvent
     public void tryGetFocus(TickEvent.ClientTickEvent event){
         if(needFocus){
@@ -82,10 +86,23 @@ public class YetAnotherInputFix{
             }catch(Exception e){
                 e.printStackTrace();
             }
+            ++logCounter;
             if(Display.isActive()){
                 FMLClientHandler.instance().getClient().setIngameFocus();
-
+                log("Focus Grabbed after %s tries",logCounter);
                 needFocus=false;
+                logCounter=0;
+            }
+        }
+        if(needCurrent){
+            downCounter=100;
+            needCurrent=false;
+        }
+        if(--downCounter>0){
+            try{
+                Display.makeCurrent();
+            }catch(Exception e){
+                e.printStackTrace();
             }
         }
     }

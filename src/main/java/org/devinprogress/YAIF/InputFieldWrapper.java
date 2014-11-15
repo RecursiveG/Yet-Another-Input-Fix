@@ -2,12 +2,15 @@ package org.devinprogress.YAIF;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraft.util.Util;
 import org.devinprogress.YAIF.Bridges.BaseActionBridge;
 import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -63,6 +66,23 @@ public class InputFieldWrapper {
         panel.add(textField, BorderLayout.PAGE_END);
         panel.setVisible(true);
         panel.validate();
+        if(Util.getOSType()==Util.EnumOS.OSX&&false) {  //OSX blacks-screen patch
+            panel.addComponentListener(new ComponentAdapter() {
+                @Override
+                public void componentResized(ComponentEvent e) {
+                    YetAnotherInputFix.log("Panel Resizing...");
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            panel.requestFocusInWindow();
+                            canvas.requestFocusInWindow();
+                            canvas.requestFocus();
+                            YetAnotherInputFix.needCurrent = true;
+                        }
+                    });
+                }
+            });
+        }
 
         // Setup frame
         frame.setUndecorated(false);
@@ -71,8 +91,8 @@ public class InputFieldWrapper {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                FMLCommonHandler.instance().exitJava(0,false);
-                //FMLClientHandler.instance().getClient().shutdown();
+                //FMLCommonHandler.instance().exitJava(0,false);
+                FMLClientHandler.instance().getClient().shutdown();
             }
         });
         frame.pack();
