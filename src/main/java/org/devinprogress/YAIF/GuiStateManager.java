@@ -1,7 +1,5 @@
 package org.devinprogress.YAIF;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiScreenBook;
@@ -9,15 +7,14 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiEditSign;
 import org.devinprogress.YAIF.Bridges.*;
-import org.lwjgl.opengl.Display;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by recursiveg on 14-11-11.
- */
+// Author: Recursive G
+// Source released under GPLv2
+// Full document under resources/LICENSE
 
 /* NEVER try to figure out how this f**king machine works */
 public class GuiStateManager {
@@ -54,20 +51,15 @@ public class GuiStateManager {
                 bridge=getNewBridge();
                 wrapper.setupBridge(bridge);
             }else{//the TextField in a new bridge
-                if(screen==incomingScreen||screen==currentScreen) {
+                if(screen==incomingScreen) {
                     currentScreen = screen;
                     incomingScreen=null;
                     currentTextField = textField;
                     bridge = getNewBridge();
-                    wrapper.setupBridge(bridge);/*
-                }else if(screen instanceof GuiContainerCreative){
-                    currentScreen = screen;
-                    currentTextField = textField;
-                    bridge = getNewBridge();
-                    wrapper.setupBridge(bridge);*/
-                }else{
+                    wrapper.setupBridge(bridge);
+                }/*else{
                     YetAnotherInputFix.log("WTF TextField %s Init without screen?",textField);
-                }
+                }*/
             }
         }else{
             if(textField==currentTextField) {
@@ -98,7 +90,7 @@ public class GuiStateManager {
     }
 
     public void onTabCompletePacket(GuiScreen screen) {
-        GuiChat chatScreen=null;
+        GuiChat chatScreen;
         if(screen instanceof GuiChat)
             chatScreen=(GuiChat)screen;
         else
@@ -123,21 +115,6 @@ public class GuiStateManager {
             bridge=getNewBridge();
             wrapper.setupBridge(bridge);
         }
-/*
-        if(currentScreen!=null)
-            return;
-
-        if(bridge==null){
-            wrapper.closeInputField();
-            bridge=null;
-            this.currentScreen=null;
-            this.currentTextField=null;
-            this.incomingScreen=null;
-        }else{
-            bridge.postGuiInit();
-        }
-           */
-
         if (incomingScreen==screen) {
             currentScreen = incomingScreen;
             incomingScreen = null;

@@ -12,11 +12,11 @@ import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
 import org.lwjgl.opengl.Display;
 
-/**
- * Created by recursiveg on 14-9-10.
- */
+// Author: Recursive G
+// Source released under GPLv2
+// Full document under resources/LICENSE
 
-@Mod(modid="YAIF", name="YetAnotherInputFix", version="0.2-dev", dependencies="required-after:FML")
+@Mod(modid="YAIF", name="YetAnotherInputFix", version="0.3-dev", dependencies="required-after:FML")
 public class YetAnotherInputFix{
     private static GuiStateManager stateMachine=null;
     public static boolean ObfuscatedEnv=true;
@@ -33,39 +33,39 @@ public class YetAnotherInputFix{
 
     //Called from GuiTextField.setFocused() due to ASMTransformed
     public static void TextFieldFocusChange(GuiTextField textField, boolean isFocused) {
-        log("TextField State Changed {textField:%s, focused:%s}",textField.toString(),isFocused);
+        //log("TextField State Changed {textField:%s, focused:%s}",textField.toString(),isFocused);
         stateMachine.TextFieldFocusChanged(FMLClientHandler.instance().getClient().currentScreen,textField,isFocused);
     }
 
     //called from net.minecraft.client.network.NetHandlerPlayClient.handleTabComplete
     public static void onTabCompletePacket(){
-        log("TabComplete Packet Received");
+        //log("TabComplete Packet Received");
         stateMachine.onTabCompletePacket(FMLClientHandler.instance().getClient().currentScreen);
     }
 
     @Mod.EventHandler
     public void load(FMLInitializationEvent event) {
-        log("FMLMod Initialization");
+        //log("FMLMod Initialization");
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
     }
 
     @SubscribeEvent
     public void onGuiChange(GuiScreenEvent.InitGuiEvent.Post e) {
-        log("PostGuiChangeEvent {GUI:%s}",e.gui.toString());
+        //log("PostGuiChangeEvent {GUI:%s}",e.gui.toString());
         stateMachine.postInitGuiEvent(e.gui);
     }
 
     @SubscribeEvent
     public void preGuiInit(GuiScreenEvent.InitGuiEvent.Pre e){
-        log("PreGuiInitEvent {GUI:%s}",e.gui.toString());
+        //log("PreGuiInitEvent {GUI:%s}",e.gui.toString());
         stateMachine.preInitGuiEvent(e.gui);
     }
 
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent e){
         if(e.gui==null) {
-            log("NullGui Open");
+            //log("NullGui Open");
             stateMachine.nullGuiOpenEvent(FMLClientHandler.instance().getClient().currentScreen);
         }
     }
@@ -89,7 +89,7 @@ public class YetAnotherInputFix{
             ++logCounter;
             if(Display.isActive()){
                 FMLClientHandler.instance().getClient().setIngameFocus();
-                log("Focus Grabbed after %s tries",logCounter);
+                //log("Focus Grabbed after %s tries",logCounter);
                 needFocus=false;
                 logCounter=0;
             }

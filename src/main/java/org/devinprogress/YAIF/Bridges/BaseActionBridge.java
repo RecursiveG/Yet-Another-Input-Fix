@@ -2,20 +2,17 @@ package org.devinprogress.YAIF.Bridges;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
-import org.devinprogress.YAIF.InputFieldWrapper;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.util.Collections;
 
-/**
- * Created by recursiveg on 14-9-11.
- */
+// Author: Recursive G
+// Source released under GPLv2
+// Full document under resources/LICENSE
+
 public abstract class BaseActionBridge {
     protected boolean textChangedByBridge=false;
     private DocumentListener documentListener=null;

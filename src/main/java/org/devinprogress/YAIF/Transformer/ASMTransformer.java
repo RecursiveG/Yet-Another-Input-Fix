@@ -2,14 +2,13 @@ package org.devinprogress.YAIF.Transformer;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.devinprogress.YAIF.YetAnotherInputFix;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
-/**
- * Created by recursiveg on 14-9-12.
- */
+// Author: Recursive G
+// Source released under GPLv2
+// Full document under resources/LICENSE
+
 public class ASMTransformer implements IClassTransformer {
     private ASMHelper asm=null;
     private static String obfedClassName=null;

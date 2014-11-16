@@ -1,19 +1,17 @@
 package org.devinprogress.YAIF.Bridges;
 
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiEditSign;
 import net.minecraft.tileentity.TileEntitySign;
 import org.devinprogress.YAIF.InputFieldWrapper;
-import org.devinprogress.YAIF.YetAnotherInputFix;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-/**
- * Created by recursiveg on 14-9-21.
- */
+// Author: Recursive G
+// Source released under GPLv2
+// Full document under resources/LICENSE
+
 public class EditSignBridge extends BaseActionBridge {
     private GuiEditSign gui;
     private InputFieldWrapper wrapper;
@@ -23,7 +21,6 @@ public class EditSignBridge extends BaseActionBridge {
         this.gui=gui;
         this.wrapper=w;
         currentLine=0;
-        //w.setTextNoEvent("");
         sign=gui.tileSign;
     }
 
@@ -49,7 +46,7 @@ public class EditSignBridge extends BaseActionBridge {
         bindKey(tf, KeyEvent.VK_ESCAPE, "esc", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                YetAnotherInputFix.log("GuiSignBridge ESC Pressed");
+                //YetAnotherInputFix.log("GuiSignBridge ESC Pressed");
                 wrapper.bridgeQuit();
             }
         });

@@ -1,20 +1,17 @@
 package org.devinprogress.YAIF.Bridges;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.gui.GuiChat;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import org.devinprogress.YAIF.InputFieldWrapper;
-import org.devinprogress.YAIF.YetAnotherInputFix;
-import org.lwjgl.input.Keyboard;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-/**
- * Created by recursiveg on 14-9-13.
- */
+// Author: Recursive G
+// Source released under GPLv2
+// Full document under resources/LICENSE
+
 public class GuiChatBridge extends BaseActionBridge {
     private GuiChat screen=null;
     private GuiTextField txt=null;
@@ -47,7 +44,7 @@ public class GuiChatBridge extends BaseActionBridge {
         bindKey(tf, KeyEvent.VK_ESCAPE, "esc", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                YetAnotherInputFix.log("GuiChatBridge ESC Pressed");
+                //YetAnotherInputFix.log("GuiChatBridge ESC Pressed");
                 wrapper.bridgeQuit();
             }
         });

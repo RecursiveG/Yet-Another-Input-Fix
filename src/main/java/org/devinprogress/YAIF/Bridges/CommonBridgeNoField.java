@@ -10,16 +10,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Method;
 
-/**
- * Created by recursiveg on 14-11-12.
- */
+// Author: Recursive G
+// Source released under GPLv2
+// Full document under resources/LICENSE
+
 public class CommonBridgeNoField extends BaseActionBridge{
     private final GuiScreen gui;
     private final InputFieldWrapper wrapper;
     private Method keyTypedMethod=null;
 
     public CommonBridgeNoField(GuiScreen screen,InputFieldWrapper wrapper){
-        YetAnotherInputFix.log("CommonBridgeNoField Initialized. %s", this);
+        //YetAnotherInputFix.log("CommonBridgeNoField Initialized. %s", this);
         gui=screen;
         this.wrapper=wrapper;
         try{
@@ -33,7 +34,7 @@ public class CommonBridgeNoField extends BaseActionBridge{
     @Override
     public boolean needShow(){
         if(keyTypedMethod==null){
-            YetAnotherInputFix.log("failed to determine keyTypedMethod @%s",gui);
+            //YetAnotherInputFix.log("failed to determine keyTypedMethod @%s",gui);
             return false;
         }
         return true;
@@ -80,7 +81,6 @@ public class CommonBridgeNoField extends BaseActionBridge{
             public void actionPerformed(ActionEvent e) {
                 GuiStateManager.getInstance().TextFieldFocusChanged(gui,null,false);
                 wrapper.closeInputField();
-                //wrapper.bridgeQuit();
             }
         });
 

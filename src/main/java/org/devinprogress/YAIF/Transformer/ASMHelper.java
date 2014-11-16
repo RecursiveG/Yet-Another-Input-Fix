@@ -1,7 +1,6 @@
 package org.devinprogress.YAIF.Transformer;
 
 import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
-import org.devinprogress.YAIF.YetAnotherInputFix;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -10,9 +9,10 @@ import org.objectweb.asm.tree.*;
 import java.lang.reflect.Method;
 import java.util.*;
 
-/**
- * Created by recursiveg on 14-10-21.
- */
+// Author: Recursive G
+// Source released under GPLv2
+// Full document under resources/LICENSE
+
 public class ASMHelper {
     private Object obj;
     //Map<DeobfuscatedClassName,Map<methodName+Desc,processMethod>>

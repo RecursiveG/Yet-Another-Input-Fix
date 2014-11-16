@@ -11,9 +11,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Method;
 
-/**
- * Created by recursiveg on 14-9-11.
- */
+// Author: Recursive G
+// Source released under GPLv2
+// Full document under resources/LICENSE
 
 public class CommonBridgeTextField extends BaseActionBridge {
     private GuiScreen scr=null;
@@ -22,7 +22,7 @@ public class CommonBridgeTextField extends BaseActionBridge {
     private Method keyTypedMethod=null;
 
     public CommonBridgeTextField(GuiScreen screen,GuiTextField textField,InputFieldWrapper wrapper){
-        YetAnotherInputFix.log("CommonBridgeTextField Initialized. %s",this);
+        //YetAnotherInputFix.log("CommonBridgeTextField Initialized. %s",this);
         scr=screen;
         this.wrapper=wrapper;
         txt=textField;
@@ -38,12 +38,7 @@ public class CommonBridgeTextField extends BaseActionBridge {
 
     @Override
     public boolean needShow(){
-        if(keyTypedMethod==null){
-            YetAnotherInputFix.log("failed to determine keyTypedMethod @%s",scr);
-            return false;
-        }
-        //return System.getProperty("YAIF.useCommonBridgeTextField","false").equals("true");
-        return true;
+        return keyTypedMethod!=null;
     }
 
     @Override

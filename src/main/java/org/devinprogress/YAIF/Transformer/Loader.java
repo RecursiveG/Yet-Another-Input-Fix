@@ -5,9 +5,10 @@ import org.devinprogress.YAIF.YetAnotherInputFix;
 
 import java.util.Map;
 
-/**
- * Created by recursiveg on 14-9-12.
- */
+// Author: Recursive G
+// Source released under GPLv2
+// Full document under resources/LICENSE
+
 @IFMLLoadingPlugin.MCVersion("1.7.10")
 public class Loader implements IFMLLoadingPlugin {
 

@@ -3,15 +3,15 @@ package org.devinprogress.YAIF.Bridges;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import org.devinprogress.YAIF.InputFieldWrapper;
-import org.devinprogress.YAIF.YetAnotherInputFix;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-/**
- * Created by recursiveg on 14-11-12.
- */
+// Author: Recursive G
+// Source released under GPLv2
+// Full document under resources/LICENSE
+
 public class CreativeInventoryBridge extends BaseActionBridge{
     private GuiContainerCreative gui;
     private GuiTextField searchField;
@@ -35,7 +35,7 @@ public class CreativeInventoryBridge extends BaseActionBridge{
         bindKey(tf, KeyEvent.VK_ESCAPE, "esc", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                YetAnotherInputFix.log("CreativeInventoryBridge ESC Pressed");
+                //YetAnotherInputFix.log("CreativeInventoryBridge ESC Pressed");
                 wrapper.bridgeQuit();
             }
         });

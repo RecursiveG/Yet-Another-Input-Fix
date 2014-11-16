@@ -3,9 +3,10 @@ package org.devinprogress.YAIF.Bridges;
 import net.minecraft.client.gui.GuiScreenBook;
 import org.devinprogress.YAIF.InputFieldWrapper;
 
-/**
- * Created by recursiveg on 14-11-13.
- */
+// Author: Recursive G
+// Source released under GPLv2
+// Full document under resources/LICENSE
+
 public class GuiBookBridge extends CommonBridgeNoField{
     private GuiScreenBook bookScr=null;
 
@@ -17,8 +18,5 @@ public class GuiBookBridge extends CommonBridgeNoField{
     @Override
     public boolean needShow(){
         return bookScr.bookIsUnsigned;
-        //return true;
     }
-
-
 }
