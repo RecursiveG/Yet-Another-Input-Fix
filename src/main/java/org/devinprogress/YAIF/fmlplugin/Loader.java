@@ -1,20 +1,16 @@
-package org.devinprogress.YAIF.Transformer;
+package org.devinprogress.YAIF.fmlplugin;
 
-import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
-import org.devinprogress.YAIF.YetAnotherInputFix;
+import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
 import java.util.Map;
 
-// Author: Recursive G
-// Source released under GPLv2
-// Full document under resources/LICENSE
-
-@IFMLLoadingPlugin.MCVersion("1.7.10")
+/**
+ * Created by recursiveg on 15-2-21.
+ */
 public class Loader implements IFMLLoadingPlugin {
-
     @Override
     public String[] getASMTransformerClass() {
-        return new String[] {ASMTransformer.class.getName()};
+        return new String[]{BytecodeTransformer.class.getName()};
     }
 
     @Override
@@ -29,7 +25,6 @@ public class Loader implements IFMLLoadingPlugin {
 
     @Override
     public void injectData(Map<String, Object> data) {
-        YetAnotherInputFix.ObfuscatedEnv=(Boolean)data.get("runtimeDeobfuscationEnabled");
     }
 
     @Override

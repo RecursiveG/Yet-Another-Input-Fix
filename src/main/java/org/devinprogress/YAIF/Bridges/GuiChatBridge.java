@@ -36,7 +36,9 @@ public class GuiChatBridge extends BaseActionBridge {
             @Override
             public void actionPerformed(ActionEvent e) {
                 txt.setText(wrapper.getText());
-                screen.keyTyped('\n', 28);
+                try {
+                    screen.keyTyped('\n', 28);
+                }catch(Exception ex){ex.printStackTrace();}
                 wrapper.bridgeQuit();
             }
         });
@@ -55,7 +57,9 @@ public class GuiChatBridge extends BaseActionBridge {
                 dispatch(new Runnable() {
                     @Override
                     public void run() {
-                        screen.keyTyped(' ', 200);
+                        try {
+                            screen.keyTyped(' ', 200);
+                        }catch(Exception ex){ex.printStackTrace();}
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
@@ -74,7 +78,9 @@ public class GuiChatBridge extends BaseActionBridge {
                 dispatch(new Runnable() {
                     @Override
                     public void run() {
+                        try{
                         screen.keyTyped(' ', 208);
+                        }catch(Exception ex){ex.printStackTrace();}
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
@@ -95,7 +101,9 @@ public class GuiChatBridge extends BaseActionBridge {
                     @Override
                     public void run() {
                         txt.setCursorPosition(cursorPos);
+                        try{
                         screen.keyTyped('\t',15);
+                        }catch(Exception ex){ex.printStackTrace();}
                         final String str=txt.getText();
                         final int pos=txt.getCursorPosition();
                         SwingUtilities.invokeLater(new Runnable() {

@@ -1,8 +1,14 @@
 package org.devinprogress.YAIF;
 
-import cpw.mods.fml.client.FMLClientHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.Util;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.apache.logging.log4j.LogManager;
 import org.devinprogress.YAIF.Bridges.BaseActionBridge;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
 
@@ -12,6 +18,9 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.nio.ByteBuffer;
 
 // Author: Recursive G
 // Source released under GPLv2
@@ -29,19 +38,20 @@ public class InputFieldWrapper {
     private JTextField textField = null;
     private JPanel panel=null;
 
+    public static InputFieldWrapper instance;
 
     public InputFieldWrapper(int Width,int Height){ //Should be Called only once
         if(hasInitiated)
             throw new RuntimeException("Double Initiation for InputFieldWrapper.");
         hasInitiated=true;
-
+        instance=this;
         // Create Instances
         try {
             canvas = new AWTGLCanvas();
         }catch(Exception e){
             e.printStackTrace();
         }
-        frame=new JFrame("Minecraft 1.7.10");
+        frame=new JFrame("Minecraft 1.8");
         textField=new JTextField();
         panel=new JPanel();
 
@@ -57,6 +67,7 @@ public class InputFieldWrapper {
         // Setup TextField
         textField.setVisible(false);
         textField.setFont(new Font("Times New Roman",Font.PLAIN, fontSize));
+        //textField.enableInputMethods(false);
 
         // Setup Panel
         panel.setLayout(new BorderLayout());
@@ -100,12 +111,17 @@ public class InputFieldWrapper {
 
     public void setupBridge(BaseActionBridge bridge){
         if(!bridge.needShow())return;
-        if(this.bridge!=null)
-            throw new RuntimeException("Loading new bridge without releasing previous one");
+        if(this.bridge!=null) {
+            LogManager.getLogger("YAIF").warn("Loading new bridge without releasing previous one");
+            releaseCurrentBridge();
+        }
         this.bridge=bridge;
         textField.setText("");
         bridge.bindKeys(textField);
-        _show();
+
+        FMLCommonHandler.instance().bus().register(new switchListener());
+
+        //_show();
     }
 
     public void releaseCurrentBridge(){
@@ -132,15 +148,16 @@ public class InputFieldWrapper {
         GuiStateManager.getInstance().inputFieldClosed();
     }
 
-    private void _show(){
+    public void _show(){
         if(!shown) {
             shown = true;
             canvas.setPreferredSize(canvas.getSize());
             textField.setVisible(true);
-            frame.pack();
-            frame.validate();
             FMLClientHandler.instance().getClient().setIngameNotInFocus();
             textField.requestFocus();
+            textField.getInputMethodRequests();
+            frame.pack();
+            frame.validate();
         }else {
             FMLClientHandler.instance().getClient().setIngameNotInFocus();
             textField.requestFocus();

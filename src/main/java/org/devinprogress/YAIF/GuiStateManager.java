@@ -79,14 +79,8 @@ public class GuiStateManager {
             return new GuiChatBridge(currentTextField,(GuiChat)currentScreen,wrapper);
         else if(currentScreen instanceof GuiEditSign)
             return new EditSignBridge((GuiEditSign)currentScreen,wrapper);
-        else if(currentScreen instanceof GuiContainerCreative)
-            return new CreativeInventoryBridge((GuiContainerCreative)currentScreen,currentTextField,wrapper);
-        else if(currentScreen instanceof GuiScreenBook)
-            return new GuiBookBridge((GuiScreenBook)currentScreen,wrapper);
-        else if(hasGuiTextField(currentScreen))
-            return new CommonBridgeTextField(currentScreen,currentTextField,wrapper);
-        else//How could this be possible?!
-            return new CommonBridgeNoField(currentScreen,wrapper);
+        else
+            return new DoNothingBridge();
     }
 
     public void onTabCompletePacket(GuiScreen screen) {

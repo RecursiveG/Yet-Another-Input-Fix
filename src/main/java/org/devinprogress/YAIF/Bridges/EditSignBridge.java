@@ -2,6 +2,7 @@ package org.devinprogress.YAIF.Bridges;
 
 import net.minecraft.client.gui.inventory.GuiEditSign;
 import net.minecraft.tileentity.TileEntitySign;
+import net.minecraft.util.ChatComponentText;
 import org.devinprogress.YAIF.InputFieldWrapper;
 
 import javax.swing.*;
@@ -39,7 +40,7 @@ public class EditSignBridge extends BaseActionBridge {
                 currentLine=currentLine+1&3;
                 gui.editLine=currentLine;
                 textChangedByBridge=true;
-                wrapper.setText(sign.signText[currentLine]);
+                wrappersetText(sign.signText[currentLine].getFormattedText());
             }
         });
 
@@ -57,7 +58,7 @@ public class EditSignBridge extends BaseActionBridge {
                 currentLine=currentLine-1&3;
                 gui.editLine=currentLine;
                 textChangedByBridge=true;
-                wrapper.setText(sign.signText[currentLine]);
+                wrappersetText(sign.signText[currentLine].getFormattedText());
             }
         });
 
@@ -67,28 +68,33 @@ public class EditSignBridge extends BaseActionBridge {
                 currentLine=currentLine+1&3;
                 gui.editLine=currentLine;
                 textChangedByBridge=true;
-                wrapper.setText(sign.signText[currentLine]);
+                wrappersetText(sign.signText[currentLine].getFormattedText());
             }
         });
 
         setListenDocumentEvent(tf);
     }
-
+    private static final int signLineLimit=24;
     @Override
     protected void textUpdated(){
         //YetAnotherInputFix.log("EditSignBridge textUpdate Invoked");
         final String str=wrapper.getText();
-        if(str.length()>15){
+        if(str.length()>signLineLimit){
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     textChangedByBridge=true;
-                    wrapper.setText(str.substring(0,15));
+                    wrapper.setText(str.substring(0,signLineLimit));
                 }
             });
-            sign.signText[currentLine]=str.substring(0,15);
+            sign.signText[currentLine]=new ChatComponentText(str.substring(0,signLineLimit));
         }else {
-            sign.signText[currentLine]=str;
+            sign.signText[currentLine]=new ChatComponentText(str);
         }
+    }
+
+    private void wrappersetText(String str){
+        if (str.endsWith("§r")) str=str.substring(0,str.length()-2);
+        wrapper.setText(str);
     }
 }

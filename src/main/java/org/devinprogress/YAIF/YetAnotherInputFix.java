@@ -1,14 +1,15 @@
 package org.devinprogress.YAIF;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.*;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
 import org.lwjgl.opengl.Display;
 
@@ -16,7 +17,7 @@ import org.lwjgl.opengl.Display;
 // Source released under GPLv2
 // Full document under resources/LICENSE
 
-@Mod(modid="YAIF", name="YetAnotherInputFix", version="0.3-dev", dependencies="required-after:FML")
+@Mod(modid="YAIF", name="YetAnotherInputFix", version="0.4-beta", dependencies="required-after:FML")
 public class YetAnotherInputFix{
     private static GuiStateManager stateMachine=null;
     public static boolean ObfuscatedEnv=true;
