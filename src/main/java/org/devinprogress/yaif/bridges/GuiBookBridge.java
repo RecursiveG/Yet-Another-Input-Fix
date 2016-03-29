@@ -1,7 +1,7 @@
-package org.devinprogress.YAIF.Bridges;
+package org.devinprogress.yaif.bridges;
 
 import net.minecraft.client.gui.GuiScreenBook;
-import org.devinprogress.YAIF.InputFieldWrapper;
+import org.devinprogress.yaif.InputFieldWrapper;
 
 // Author: Recursive G
 // Source released under GPLv2

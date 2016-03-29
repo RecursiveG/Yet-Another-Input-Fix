@@ -1,4 +1,4 @@
-package org.devinprogress.YAIF.fmlplugin;
+package org.devinprogress.yaif.fmlplugin;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
@@ -27,7 +27,7 @@ public class BytecodeTransformer extends BaseAsmTransformer {
             mn.instructions.insertBefore(n,new VarInsnNode(Opcodes.ALOAD,0));
             mn.instructions.insertBefore(n,new FieldInsnNode(Opcodes.GETFIELD,obfedClassName.replace('.','/'),heightVarName,"I"));
             mn.instructions.insertBefore(n,new MethodInsnNode(Opcodes.INVOKESTATIC,
-                    "org/devinprogress/YAIF/YetAnotherInputFix","SetupTextFieldWrapper","(II)V",false));
+                    "org/devinprogress/yaif/YetAnotherInputFix","SetupTextFieldWrapper","(II)V",false));
         }
     }
 
@@ -38,7 +38,7 @@ public class BytecodeTransformer extends BaseAsmTransformer {
             mn.instructions.insertBefore(n,new VarInsnNode(Opcodes.ALOAD,0));
             mn.instructions.insertBefore(n,new VarInsnNode(Opcodes.ILOAD,1));
             mn.instructions.insertBefore(n,new MethodInsnNode(Opcodes.INVOKESTATIC,
-                    "org/devinprogress/YAIF/YetAnotherInputFix","TextFieldFocusChange",
+                    "org/devinprogress/yaif/YetAnotherInputFix","TextFieldFocusChange",
                     "(L"+obfedClassName.replace('.','/')+";Z)V",false));
         }
     }
@@ -48,7 +48,7 @@ public class BytecodeTransformer extends BaseAsmTransformer {
         public void transform(MethodNode mn, String srgName, boolean devEnv, String classObfName) {
             AbstractInsnNode n=getNthInsnNode(mn, Opcodes.INVOKEVIRTUAL, 2);
             mn.instructions.insert(n, new MethodInsnNode(Opcodes.INVOKESTATIC,
-                    "org/devinprogress/YAIF/YetAnotherInputFix", "onTabCompletePacket", "()V", false));
+                    "org/devinprogress/yaif/YetAnotherInputFix", "onTabCompletePacket", "()V", false));
         }
     }
 }

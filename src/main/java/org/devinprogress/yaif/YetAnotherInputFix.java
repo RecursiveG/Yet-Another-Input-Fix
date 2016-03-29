@@ -1,4 +1,4 @@
-package org.devinprogress.YAIF;
+package org.devinprogress.yaif;
 
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraftforge.client.event.GuiOpenEvent;
@@ -54,18 +54,18 @@ public class YetAnotherInputFix{
     @SubscribeEvent
     public void onGuiChange(GuiScreenEvent.InitGuiEvent.Post e) {
         //log("PostGuiChangeEvent {GUI:%s}",e.gui.toString());
-        stateMachine.postInitGuiEvent(e.gui);
+        stateMachine.postInitGuiEvent(e.getGui());
     }
 
     @SubscribeEvent
     public void preGuiInit(GuiScreenEvent.InitGuiEvent.Pre e){
         //log("PreGuiInitEvent {GUI:%s}",e.gui.toString());
-        stateMachine.preInitGuiEvent(e.gui);
+        stateMachine.preInitGuiEvent(e.getGui());
     }
 
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent e){
-        if(e.gui==null) {
+        if(e.getGui()==null) {
             //log("NullGui Open");
             stateMachine.nullGuiOpenEvent(FMLClientHandler.instance().getClient().currentScreen);
         }

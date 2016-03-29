@@ -1,14 +1,10 @@
-package org.devinprogress.YAIF;
+package org.devinprogress.yaif;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.Util;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
-import org.devinprogress.YAIF.Bridges.BaseActionBridge;
-import org.lwjgl.input.Keyboard;
+import org.devinprogress.yaif.bridges.BaseActionBridge;
 import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
 
@@ -18,9 +14,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.nio.ByteBuffer;
 
 // Author: Recursive G
 // Source released under GPLv2
@@ -75,7 +68,7 @@ public class InputFieldWrapper {
         panel.add(textField, BorderLayout.PAGE_END);
         panel.setVisible(true);
         panel.validate();
-        if(Util.getOSType()==Util.EnumOS.OSX&&false) {  //OSX blacks-screen patch
+        if(Util.getOSType()==Util.EnumOS.OSX) {  //OSX blacks-screen patch
             panel.addComponentListener(new ComponentAdapter() {
                 @Override
                 public void componentResized(ComponentEvent e) {
@@ -107,6 +100,12 @@ public class InputFieldWrapper {
         frame.validate();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void setupBridge(BaseActionBridge bridge){

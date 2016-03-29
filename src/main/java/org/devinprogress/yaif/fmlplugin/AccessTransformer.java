@@ -1,4 +1,4 @@
-package org.devinprogress.YAIF.fmlplugin;
+package org.devinprogress.yaif.fmlplugin;
 
 import java.io.IOException;
 

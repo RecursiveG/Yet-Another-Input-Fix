@@ -1,4 +1,4 @@
-package org.devinprogress.YAIF;
+package org.devinprogress.yaif;
 
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiScreen;
@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiScreenBook;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiEditSign;
-import org.devinprogress.YAIF.Bridges.*;
+import org.devinprogress.yaif.bridges.*;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;

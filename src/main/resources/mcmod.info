@@ -1,10 +1,13 @@
-[
 {
-  "modid": "YAIF",
-  "name": "Yet Another InputFix",
-  "description": "InputFix MOD using ASMTransformer.",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
-  "authorList": ["RecursiveG"]
+  "modListVersion": 2,
+  "modList": [{
+    "modid": "yaif",
+    "name": "Yet Another InputFix",
+    "description": "Add extra TextField allowing CJK input",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "https://github.com/RecursiveG/Yet-Another-Input-Fix",
+    "authorList": [ "RecursiveG" ],
+    "useDependencyInformation": false
+  }]
 }
-]

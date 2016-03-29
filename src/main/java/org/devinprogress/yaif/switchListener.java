@@ -1,4 +1,4 @@
-package org.devinprogress.YAIF;
+package org.devinprogress.yaif;
 
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;

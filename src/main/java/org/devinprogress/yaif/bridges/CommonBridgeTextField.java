@@ -1,10 +1,10 @@
-package org.devinprogress.YAIF.Bridges;
+package org.devinprogress.yaif.bridges;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
-import org.devinprogress.YAIF.GuiStateManager;
-import org.devinprogress.YAIF.InputFieldWrapper;
-import org.devinprogress.YAIF.YetAnotherInputFix;
+import org.devinprogress.yaif.GuiStateManager;
+import org.devinprogress.yaif.InputFieldWrapper;
+import org.devinprogress.yaif.YetAnotherInputFix;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

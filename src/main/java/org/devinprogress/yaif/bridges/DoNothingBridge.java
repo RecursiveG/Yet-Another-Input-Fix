@@ -1,4 +1,4 @@
-package org.devinprogress.YAIF.Bridges;
+package org.devinprogress.yaif.bridges;
 
 /**
  * Created by recursiveg on 14-12-17.

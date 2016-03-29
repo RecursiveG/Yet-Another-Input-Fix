@@ -1,9 +1,9 @@
-package org.devinprogress.YAIF.Bridges;
+package org.devinprogress.yaif.bridges;
 
 import net.minecraft.client.gui.inventory.GuiEditSign;
 import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.util.ChatComponentText;
-import org.devinprogress.YAIF.InputFieldWrapper;
+import net.minecraft.util.text.TextComponentString;
+import org.devinprogress.yaif.InputFieldWrapper;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -87,9 +87,9 @@ public class EditSignBridge extends BaseActionBridge {
                     wrapper.setText(str.substring(0,signLineLimit));
                 }
             });
-            sign.signText[currentLine]=new ChatComponentText(str.substring(0,signLineLimit));
+            sign.signText[currentLine]=new TextComponentString(str.substring(0,signLineLimit));
         }else {
-            sign.signText[currentLine]=new ChatComponentText(str);
+            sign.signText[currentLine]=new TextComponentString(str);
         }
     }
 

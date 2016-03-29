@@ -1,4 +1,4 @@
-package org.devinprogress.YAIF.Bridges;
+package org.devinprogress.yaif.bridges;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;

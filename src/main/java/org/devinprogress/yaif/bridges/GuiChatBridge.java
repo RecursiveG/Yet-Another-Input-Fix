@@ -1,8 +1,8 @@
-package org.devinprogress.YAIF.Bridges;
+package org.devinprogress.yaif.bridges;
 
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiTextField;
-import org.devinprogress.YAIF.InputFieldWrapper;
+import org.devinprogress.yaif.InputFieldWrapper;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
