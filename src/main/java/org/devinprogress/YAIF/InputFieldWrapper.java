@@ -75,7 +75,7 @@ public class InputFieldWrapper {
         panel.add(textField, BorderLayout.PAGE_END);
         panel.setVisible(true);
         panel.validate();
-        if(Util.getOSType()==Util.EnumOS.OSX&&false) {  //OSX blacks-screen patch
+        if(Util.getOSType()==Util.EnumOS.OSX) {  //OSX blacks-screen patch
             panel.addComponentListener(new ComponentAdapter() {
                 @Override
                 public void componentResized(ComponentEvent e) {
@@ -107,6 +107,12 @@ public class InputFieldWrapper {
         frame.validate();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void setupBridge(BaseActionBridge bridge){
