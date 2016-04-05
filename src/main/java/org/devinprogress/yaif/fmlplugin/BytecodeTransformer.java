@@ -12,7 +12,7 @@ public class BytecodeTransformer extends BaseAsmTransformer {
         hookMethod("net.minecraft.client.Minecraft", "func_71384_a", "startGame", "()V", new initWrapper());
         hookMethod("net.minecraft.client.gui.GuiTextField", "func_146195_b", "setFocused", "(Z)V", new focusHook());
         hookMethod("net.minecraft.client.network.NetHandlerPlayClient", "func_147274_a", "handleTabComplete",
-                "(Lnet/minecraft/network/play/server/S3APacketTabComplete;)V", new onTabComplete());
+                "(Lnet/minecraft/network/play/server/SPacketTabComplete;)V", new onTabComplete());
 
     }
 
@@ -46,8 +46,8 @@ public class BytecodeTransformer extends BaseAsmTransformer {
     private class onTabComplete implements IMethodTransformer{
         @Override
         public void transform(MethodNode mn, String srgName, boolean devEnv, String classObfName) {
-            AbstractInsnNode n=getNthInsnNode(mn, Opcodes.INVOKEVIRTUAL, 2);
-            mn.instructions.insert(n, new MethodInsnNode(Opcodes.INVOKESTATIC,
+            AbstractInsnNode n=getNthInsnNode(mn, Opcodes.ALOAD, 6);
+            mn.instructions.insertBefore(n, new MethodInsnNode(Opcodes.INVOKESTATIC,
                     "org/devinprogress/yaif/YetAnotherInputFix", "onTabCompletePacket", "()V", false));
         }
     }
