@@ -17,7 +17,7 @@ import org.lwjgl.opengl.Display;
 // Source released under GPLv2
 // Full document under resources/LICENSE
 
-@Mod(modid = "YAIF", name = "YetAnotherInputFix", version = "0.4-beta", dependencies = "required-after:FML")
+@Mod(modid = "yaif")
 public class YetAnotherInputFix {
     private static GuiStateManager stateMachine = null;
     public static boolean ObfuscatedEnv = true;
