@@ -7,16 +7,16 @@ import org.devinprogress.yaif.InputFieldWrapper;
 // Source released under GPLv2
 // Full document under resources/LICENSE
 
-public class GuiBookBridge extends CommonBridgeNoField{
-    private GuiScreenBook bookScr=null;
+public class GuiBookBridge extends CommonBridgeNoField {
+    private GuiScreenBook bookScr = null;
 
     public GuiBookBridge(GuiScreenBook screen, InputFieldWrapper wrapper) {
         super(screen, wrapper);
-        bookScr=screen;
+        bookScr = screen;
     }
 
     @Override
-    public boolean needShow(){
+    public boolean needShow() {
         return bookScr.bookIsUnsigned;
     }
 }

@@ -14,25 +14,28 @@ import java.util.Collections;
 // Full document under resources/LICENSE
 
 public abstract class BaseActionBridge {
-    protected boolean textChangedByBridge=false;
-    private DocumentListener documentListener=null;
-    public void postGuiInit(){}
-    protected void setListenDocumentEvent(JTextField textField){
-        documentListener=new DocumentListener() {
+    protected boolean textChangedByBridge = false;
+    private DocumentListener documentListener = null;
+
+    public void postGuiInit() {
+    }
+
+    protected void setListenDocumentEvent(JTextField textField) {
+        documentListener = new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                if(!textChangedByBridge){
+                if (!textChangedByBridge) {
                     textUpdated();
                 }
-                textChangedByBridge=false;
+                textChangedByBridge = false;
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                if(!textChangedByBridge){
+                if (!textChangedByBridge) {
                     textUpdated();
                 }
-                textChangedByBridge=false;
+                textChangedByBridge = false;
             }
 
             @Override
@@ -42,34 +45,40 @@ public abstract class BaseActionBridge {
         textField.getDocument().addDocumentListener(documentListener);
     }
 
-    protected void textUpdated(){}
+    protected void textUpdated() {
+    }
 
-    public boolean needShow(){
+    public boolean needShow() {
         return true;
     }
-    public void bindKeys(JTextField textField){
+
+    public void bindKeys(JTextField textField) {
         textField.getInputMap().clear();
         textField.getActionMap().clear();
         textField.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.EMPTY_SET);
         textField.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, Collections.EMPTY_SET);
     }
-    public void unlink(JTextField t){
-        if(documentListener!=null)
+
+    public void unlink(JTextField t) {
+        if (documentListener != null)
             t.getDocument().removeDocumentListener(documentListener);
         t.setText("");
     }
-    public void onTabComplete(GuiChat chatScreen){
+
+    public void onTabComplete(GuiChat chatScreen) {
         throw new RuntimeException("WTF TabComplete?!");
     }
 
-    protected static void bindKey(JTextField txt,int key,Object unique,AbstractAction action){
-        txt.getInputMap().put(KeyStroke.getKeyStroke(key,0),unique);
-        txt.getActionMap().put(unique,action);
+    protected static void bindKey(JTextField txt, int key, Object unique, AbstractAction action) {
+        txt.getInputMap().put(KeyStroke.getKeyStroke(key, 0), unique);
+        txt.getActionMap().put(unique, action);
     }
-    protected void dispatch(Runnable action){
+
+    protected void dispatch(Runnable action) {
         Minecraft.getMinecraft().addScheduledTask(action);
     }
-    public void releaseObstacleFlag(){
-        textChangedByBridge=false;
+
+    public void releaseObstacleFlag() {
+        textChangedByBridge = false;
     }
 }

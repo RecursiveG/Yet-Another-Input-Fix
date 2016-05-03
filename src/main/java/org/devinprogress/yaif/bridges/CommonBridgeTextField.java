@@ -16,40 +16,40 @@ import java.lang.reflect.Method;
 // Full document under resources/LICENSE
 
 public class CommonBridgeTextField extends BaseActionBridge {
-    private GuiScreen scr=null;
-    private GuiTextField txt=null;
-    private InputFieldWrapper wrapper=null;
-    private Method keyTypedMethod=null;
+    private GuiScreen scr = null;
+    private GuiTextField txt = null;
+    private InputFieldWrapper wrapper = null;
+    private Method keyTypedMethod = null;
 
-    public CommonBridgeTextField(GuiScreen screen,GuiTextField textField,InputFieldWrapper wrapper){
+    public CommonBridgeTextField(GuiScreen screen, GuiTextField textField, InputFieldWrapper wrapper) {
         //YetAnotherInputFix.log("CommonBridgeTextField Initialized. %s",this);
-        scr=screen;
-        this.wrapper=wrapper;
-        txt=textField;
+        scr = screen;
+        this.wrapper = wrapper;
+        txt = textField;
 
-        this.wrapper=wrapper;
-        try{
-            keyTypedMethod=scr.getClass().getDeclaredMethod(YetAnotherInputFix.ObfuscatedEnv?"func_73869_a":"keyTyped",char.class,int.class);
+        this.wrapper = wrapper;
+        try {
+            keyTypedMethod = scr.getClass().getDeclaredMethod(YetAnotherInputFix.ObfuscatedEnv ? "func_73869_a" : "keyTyped", char.class, int.class);
             keyTypedMethod.setAccessible(true);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public boolean needShow(){
-        return keyTypedMethod!=null;
+    public boolean needShow() {
+        return keyTypedMethod != null;
     }
 
     @Override
-    public void bindKeys(JTextField tf){
+    public void bindKeys(JTextField tf) {
         super.bindKeys(tf);
 
-        bindKey(tf, KeyEvent.VK_ENTER,"enter", new AbstractAction() {
+        bindKey(tf, KeyEvent.VK_ENTER, "enter", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 txt.setText(wrapper.getText());
-                GuiStateManager.getInstance().TextFieldFocusChanged(scr,txt,false);
+                GuiStateManager.getInstance().TextFieldFocusChanged(scr, txt, false);
                 wrapper.closeInputField();
             }
         });
@@ -58,7 +58,7 @@ public class CommonBridgeTextField extends BaseActionBridge {
             @Override
             public void actionPerformed(ActionEvent e) {
                 txt.setText(wrapper.getText());
-                GuiStateManager.getInstance().TextFieldFocusChanged(scr,txt,false);
+                GuiStateManager.getInstance().TextFieldFocusChanged(scr, txt, false);
                 wrapper.closeInputField();
             }
         });
@@ -67,30 +67,30 @@ public class CommonBridgeTextField extends BaseActionBridge {
     }
 
     @Override
-    protected void textUpdated(){
-        String str=wrapper.getText();
-        int lim=txt.getMaxStringLength();
+    protected void textUpdated() {
+        String str = wrapper.getText();
+        int lim = txt.getMaxStringLength();
         final String finStr;
-        if(str.length()>lim){
-            finStr=str.substring(0,lim);
+        if (str.length() > lim) {
+            finStr = str.substring(0, lim);
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    textChangedByBridge=true;
+                    textChangedByBridge = true;
                     wrapper.setText(finStr);
                 }
             });
-        }else{
-            finStr=str;
+        } else {
+            finStr = str;
         }
         dispatch(new Runnable() {
             @Override
             public void run() {
                 try {
-                    if(finStr.equals("")){
+                    if (finStr.equals("")) {
                         txt.setText("X");
-                        keyTypedMethod.invoke(scr, ' ',14);
-                    }else {
+                        keyTypedMethod.invoke(scr, ' ', 14);
+                    } else {
                         txt.setText(finStr.substring(0, finStr.length() - 1));
                         keyTypedMethod.invoke(scr, finStr.charAt(finStr.length() - 1), -1);
                     }
@@ -102,8 +102,8 @@ public class CommonBridgeTextField extends BaseActionBridge {
     }
 
     @Override
-    public void postGuiInit(){
-        textChangedByBridge=true;
+    public void postGuiInit() {
+        textChangedByBridge = true;
         wrapper.setText(txt.getText());
     }
 }

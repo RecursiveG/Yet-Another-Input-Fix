@@ -3,11 +3,8 @@ package org.devinprogress.yaif.fmlplugin;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
-/**
- * Created by recursiveg on 15-2-21.
- */
 public class BytecodeTransformer extends BaseAsmTransformer {
-    public BytecodeTransformer(){
+    public BytecodeTransformer() {
         super();
         hookMethod("net.minecraft.client.Minecraft", "func_71384_a", "startGame", "()V", new initWrapper());
         hookMethod("net.minecraft.client.gui.GuiTextField", "func_146195_b", "setFocused", "(Z)V", new focusHook());
@@ -16,37 +13,37 @@ public class BytecodeTransformer extends BaseAsmTransformer {
 
     }
 
-    private class initWrapper implements IMethodTransformer{
+    private class initWrapper implements IMethodTransformer {
         @Override
         public void transform(MethodNode mn, String srgName, boolean devEnv, String obfedClassName) {
-            AbstractInsnNode n=getNthInsnNode(mn, Opcodes.ALOAD,15);
-            String widthVarName=devEnv?"displayWidth":"field_71443_c";
-            String heightVarName=devEnv?"displayHeight":"field_71440_d";
-            mn.instructions.insertBefore(n,new VarInsnNode(Opcodes.ALOAD,0));
-            mn.instructions.insertBefore(n,new FieldInsnNode(Opcodes.GETFIELD,obfedClassName.replace('.','/'),widthVarName,"I"));
-            mn.instructions.insertBefore(n,new VarInsnNode(Opcodes.ALOAD,0));
-            mn.instructions.insertBefore(n,new FieldInsnNode(Opcodes.GETFIELD,obfedClassName.replace('.','/'),heightVarName,"I"));
-            mn.instructions.insertBefore(n,new MethodInsnNode(Opcodes.INVOKESTATIC,
-                    "org/devinprogress/yaif/YetAnotherInputFix","SetupTextFieldWrapper","(II)V",false));
+            AbstractInsnNode n = getNthInsnNode(mn, Opcodes.ALOAD, 15);
+            String widthVarName = devEnv ? "displayWidth" : "field_71443_c";
+            String heightVarName = devEnv ? "displayHeight" : "field_71440_d";
+            mn.instructions.insertBefore(n, new VarInsnNode(Opcodes.ALOAD, 0));
+            mn.instructions.insertBefore(n, new FieldInsnNode(Opcodes.GETFIELD, obfedClassName.replace('.', '/'), widthVarName, "I"));
+            mn.instructions.insertBefore(n, new VarInsnNode(Opcodes.ALOAD, 0));
+            mn.instructions.insertBefore(n, new FieldInsnNode(Opcodes.GETFIELD, obfedClassName.replace('.', '/'), heightVarName, "I"));
+            mn.instructions.insertBefore(n, new MethodInsnNode(Opcodes.INVOKESTATIC,
+                    "org/devinprogress/yaif/YetAnotherInputFix", "SetupTextFieldWrapper", "(II)V", false));
         }
     }
 
-    private class focusHook implements IMethodTransformer{
+    private class focusHook implements IMethodTransformer {
         @Override
         public void transform(MethodNode mn, String srgName, boolean devEnv, String obfedClassName) {
-            AbstractInsnNode n=mn.instructions.getFirst();
-            mn.instructions.insertBefore(n,new VarInsnNode(Opcodes.ALOAD,0));
-            mn.instructions.insertBefore(n,new VarInsnNode(Opcodes.ILOAD,1));
-            mn.instructions.insertBefore(n,new MethodInsnNode(Opcodes.INVOKESTATIC,
-                    "org/devinprogress/yaif/YetAnotherInputFix","TextFieldFocusChange",
-                    "(L"+obfedClassName.replace('.','/')+";Z)V",false));
+            AbstractInsnNode n = mn.instructions.getFirst();
+            mn.instructions.insertBefore(n, new VarInsnNode(Opcodes.ALOAD, 0));
+            mn.instructions.insertBefore(n, new VarInsnNode(Opcodes.ILOAD, 1));
+            mn.instructions.insertBefore(n, new MethodInsnNode(Opcodes.INVOKESTATIC,
+                    "org/devinprogress/yaif/YetAnotherInputFix", "TextFieldFocusChange",
+                    "(L" + obfedClassName.replace('.', '/') + ";Z)V", false));
         }
     }
 
-    private class onTabComplete implements IMethodTransformer{
+    private class onTabComplete implements IMethodTransformer {
         @Override
         public void transform(MethodNode mn, String srgName, boolean devEnv, String classObfName) {
-            AbstractInsnNode n=getNthInsnNode(mn, Opcodes.ALOAD, 6);
+            AbstractInsnNode n = getNthInsnNode(mn, Opcodes.ALOAD, 6);
             mn.instructions.insertBefore(n, new MethodInsnNode(Opcodes.INVOKESTATIC,
                     "org/devinprogress/yaif/YetAnotherInputFix", "onTabCompletePacket", "()V", false));
         }

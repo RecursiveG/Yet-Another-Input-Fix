@@ -8,19 +8,17 @@ import org.lwjgl.input.Keyboard;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 
-/**
- * Created by recursiveg on 15-2-23.
- */
 public class switchListener {
-    private static switchListener instance=null;
+    private static switchListener instance = null;
 
-    public static switchListener getInstance(){
-        if (instance==null) instance=new switchListener();
+    public static switchListener getInstance() {
+        if (instance == null) instance = new switchListener();
         return instance;
     }
 
 
     private static Field lwjglKeyBuffer;
+
     static {
         try {
             lwjglKeyBuffer = Keyboard.class.getDeclaredField("keyDownBuffer");
@@ -32,24 +30,24 @@ public class switchListener {
     }
 
     @SubscribeEvent
-    public void clientTickEvent(TickEvent.ClientTickEvent event){
+    public void clientTickEvent(TickEvent.ClientTickEvent event) {
         /*YetAnotherInputFix.log.info(String.format("Ticking event #%d, Side=%s Phase=%s Type=%s",round,event.side.name(),event.phase.name(),event.type.name()));
         if(++round==10) {
             round=0;
             //FMLCommonHandler.instance().bus().unregister(this);
         }*/
-        if(!hasKeyDown()){
+        if (!hasKeyDown()) {
             InputFieldWrapper.instance._show();
             FMLCommonHandler.instance().bus().unregister(this);
         }
     }
 
-    private boolean hasKeyDown(){
+    private boolean hasKeyDown() {
         try {
             ByteBuffer tmp = (ByteBuffer) (lwjglKeyBuffer.get(null));
-            for(int i=0;i<tmp.remaining();i++)
-                if (tmp.get(i)!=0)return true;
-        }catch(Exception ex){
+            for (int i = 0; i < tmp.remaining(); i++)
+                if (tmp.get(i) != 0) return true;
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return false;

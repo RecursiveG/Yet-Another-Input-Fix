@@ -12,24 +12,24 @@ import java.awt.event.KeyEvent;
 // Source released under GPLv2
 // Full document under resources/LICENSE
 
-public class CreativeInventoryBridge extends BaseActionBridge{
+public class CreativeInventoryBridge extends BaseActionBridge {
     private GuiContainerCreative gui;
     private GuiTextField searchField;
     private InputFieldWrapper wrapper;
 
-    public CreativeInventoryBridge(GuiContainerCreative gui,GuiTextField tf,InputFieldWrapper w){
-        this.gui=gui;
-        searchField=tf;
-        wrapper=w;
+    public CreativeInventoryBridge(GuiContainerCreative gui, GuiTextField tf, InputFieldWrapper w) {
+        this.gui = gui;
+        searchField = tf;
+        wrapper = w;
     }
 
     @Override
-    public boolean needShow(){
+    public boolean needShow() {
         return true;
     }
 
     @Override
-    public void bindKeys(JTextField tf){
+    public void bindKeys(JTextField tf) {
         super.bindKeys(tf);
 
         bindKey(tf, KeyEvent.VK_ESCAPE, "esc", new AbstractAction() {
@@ -44,18 +44,18 @@ public class CreativeInventoryBridge extends BaseActionBridge{
     }
 
     @Override
-    protected void textUpdated(){
-        final String str=wrapper.getText();
-        if(str.length()>15){
+    protected void textUpdated() {
+        final String str = wrapper.getText();
+        if (str.length() > 15) {
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    textChangedByBridge=true;
-                    wrapper.setText(str.substring(0,15));
+                    textChangedByBridge = true;
+                    wrapper.setText(str.substring(0, 15));
                 }
             });
-            searchField.setText(str.substring(0,15));
-        }else {
+            searchField.setText(str.substring(0, 15));
+        } else {
             searchField.setText(str);
         }
         gui.updateCreativeSearch();
