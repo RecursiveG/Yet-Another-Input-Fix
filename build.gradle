@@ -14,12 +14,12 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = "0.5-beta"
 group= "org.devinprogress.yaif"
-archivesBaseName = "YetAnotherInputFix-1.9"
+archivesBaseName = "YetAnotherInputFix-mc1.9-forge1868"
 
 minecraft {
-    version = "1.9-12.16.0.1813-1.9"
+    version = "1.9-12.16.0.1868-1.9"
     runDir = "../gameDir"
-    mappings = 'snapshot_20160329'
+    mappings = "snapshot_20160312"
 }
 
 jar
@@ -28,6 +28,15 @@ jar
         attributes 'FMLCorePlugin': 'org.devinprogress.yaif.fmlplugin.Loader'
         attributes 'FMLCorePluginContainsFMLMod': true
         attributes 'FMLAT': 'inputfix_at.cfg'
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+            exclude 'net/minecraft'
+        }
     }
 }
 

@@ -5,6 +5,7 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.apache.logging.log4j.LogManager;
 import org.devinprogress.yaif.bridges.BaseActionBridge;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
 
@@ -44,7 +45,7 @@ public class InputFieldWrapper {
         }catch(Exception e){
             e.printStackTrace();
         }
-        frame=new JFrame("Minecraft 1.8");
+        frame=new JFrame("Minecraft 1.9");
         textField=new JTextField();
         panel=new JPanel();
 
@@ -58,7 +59,7 @@ public class InputFieldWrapper {
         canvas.setPreferredSize(new Dimension(Width, Height));
 
         // Setup TextField
-        textField.setVisible(false);
+        textField.setVisible(shown);
         textField.setFont(new Font("Times New Roman",Font.PLAIN, fontSize));
         //textField.enableInputMethods(false);
 
@@ -100,9 +101,10 @@ public class InputFieldWrapper {
         frame.validate();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        //frame.setAutoRequestFocus(true);
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
