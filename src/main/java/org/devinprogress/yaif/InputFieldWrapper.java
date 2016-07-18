@@ -44,7 +44,7 @@ public class InputFieldWrapper {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        frame = new JFrame("Minecraft 1.9");
+        frame = new JFrame("Minecraft 1.10.2");
         textField = new JTextField();
         panel = new JPanel();
 
